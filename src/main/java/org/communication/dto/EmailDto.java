@@ -23,6 +23,7 @@ public class EmailDto {
     private String host;
     private int port;
     private String password;
+    private int priority;
 
 
 }
