@@ -25,5 +25,4 @@ public class EmailDto {
     private String password;
     private int priority;
 
-
 }

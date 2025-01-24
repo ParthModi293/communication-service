@@ -24,6 +24,5 @@ public class TemplateMastDto {
     @Pattern(regexp = Const.PatternCheck.REMARK, message = "Enter valid description")
     private String description;
 
-//    @Enum(enumClass = Enum.PRIORITY.class, message = "Enter valid priority")
     private Enum.PRIORITY priority;
 }

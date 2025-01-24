@@ -1,6 +1,7 @@
 package org.communication.service;
 
 import org.common.common.ResponseBean;
+import org.communication.config.MessageService;
 import org.communication.dto.TemplateDetailsDto;
 import org.communication.entity.TemplateDetails;
 import org.communication.repository.TemplateDetailsRepository;
@@ -16,47 +17,42 @@ public class TemplateDetailsService {
 
     private final TemplateDetailsValidator templateDetailsValidator;
     private final TemplateDetailsRepository templateDetailsRepository;
+    private final MessageService messageService;
 
-    public TemplateDetailsService(TemplateDetailsValidator templateDetailsValidator, TemplateDetailsRepository templateDetailsRepository) {
+    public TemplateDetailsService(TemplateDetailsValidator templateDetailsValidator, TemplateDetailsRepository templateDetailsRepository, MessageService messageService) {
         this.templateDetailsValidator = templateDetailsValidator;
         this.templateDetailsRepository = templateDetailsRepository;
+        this.messageService = messageService;
     }
 
-    public ResponseBean<?> createTemplateDetail(TemplateDetailsDto templateDetailsDto) {
-
-        ResponseBean<Void> responseBean = templateDetailsValidator.templateDetailsValidation(templateDetailsDto);
-        if (responseBean.getRStatus() != HttpStatus.OK) {
-            return responseBean;
-        }
-        Double result = 0.0;
+    public ResponseBean<TemplateDetails> createTemplateDetail(TemplateDetailsDto templateDetailsDto) {
+        templateDetailsValidator.validateTemplateDetails(templateDetailsDto);
+        double result = 0.0;
         if (templateDetailsDto.getId() > 0) {
             TemplateDetails existTemplateDetails = templateDetailsRepository.findById(templateDetailsDto.getId()).orElse(null);
             result = existTemplateDetails.getVersion();
         }
 
-        TemplateDetails templateDetails = new TemplateDetails();
-        templateDetails.setVersion(generateVersionSeries(result));
-        templateDetails.setTemplateMastId(templateDetailsDto.getTemplateMastId());
-        templateDetails.setSubject(templateDetailsDto.getSubject());
-        templateDetails.setBody(templateDetailsDto.getBody());
-        templateDetails.setCreatedAt(LocalDateTime.now());
-        templateDetails.setUpdatedAt(LocalDateTime.now());
-        templateDetails.setIsActive(templateDetailsDto.getIsActive());
-        templateDetails.setFromEmailId(templateDetailsDto.getFromEmailId());
+        TemplateDetails templateDetails = new TemplateDetails(templateDetailsDto.getSubject(), templateDetailsDto.getBody(),
+                templateDetailsDto.getTemplateMastId(), generateVersionSeries(result), LocalDateTime.now(), LocalDateTime.now(),
+                templateDetailsDto.getIsActive(), templateDetailsDto.getFromEmailId());
 
-        templateDetails = templateDetailsRepository.save(templateDetails);
-        return new ResponseBean<>(HttpStatus.OK, "Template added successfully", "Template added successfully", templateDetails);
+        templateDetails = saveTemplateDetails(templateDetails);
+        return new ResponseBean<>(HttpStatus.OK, messageService.getMessage("TEMPLATE_DETAILS_ADD"), messageService.getMessage("TEMPLATE_DETAILS_ADD"), templateDetails);
+    }
+
+    public TemplateDetails saveTemplateDetails(TemplateDetails templateDetails) {
+        return templateDetailsRepository.save(templateDetails);
     }
 
     public ResponseBean<?> getTemplateDetail(int templateMastId) {
+        TemplateDetails templateDetailsByTemplateMastId = getTemplateDetailsByTemplateMastId(templateMastId);
+        return new ResponseBean<>(HttpStatus.OK, messageService.getMessage("TEMPLATE_DETAILS_FETCH"), messageService.getMessage("TEMPLATE_DETAILS_FETCH"), templateDetailsByTemplateMastId);
+    }
 
-        ResponseBean<Void> responseBean = templateDetailsValidator.templateMastIdValidation(templateMastId);
-        if (responseBean.getRStatus() != HttpStatus.OK) {
-            return responseBean;
-        }
-
-        TemplateDetails templateDetails = templateDetailsRepository.findFirstByTemplateMastIdOrderByCreatedAtDesc(templateMastId);
-        return new ResponseBean<>(HttpStatus.OK, "Template added successfully", "Template added successfully", templateDetails);
+    public TemplateDetails getTemplateDetailsByTemplateMastId(int templateMastId) {
+        templateDetailsValidator.validateTemplateMastId(templateMastId);
+        return templateDetailsRepository.findFirstByTemplateMastIdOrderByCreatedAtDesc(templateMastId);
     }
 
     public static double generateVersionSeries(double currentVersion) {

@@ -4,11 +4,14 @@ import io.micrometer.common.util.StringUtils;
 import org.common.common.Pagination;
 import org.common.common.ResponseBean;
 import org.communication.common.Const;
+import org.communication.config.MessageService;
 import org.communication.dto.TemplateMastDto;
 import org.communication.dto.TemplateMastFilterRequest;
 import org.communication.entity.TemplateMast;
 import org.communication.repository.TemplateMastRepository;
 import org.communication.validator.TemplateMastValidator;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,10 +27,12 @@ public class TemplateMastService {
 
     private final TemplateMastRepository templateMastRepository;
     private final TemplateMastValidator templateMastValidator;
+    private final MessageService messageService;
 
-    public TemplateMastService(TemplateMastRepository templateMastRepository, TemplateMastValidator templateMastValidator) {
+    public TemplateMastService(TemplateMastRepository templateMastRepository, TemplateMastValidator templateMastValidator, MessageService messageService) {
         this.templateMastRepository = templateMastRepository;
         this.templateMastValidator = templateMastValidator;
+        this.messageService = messageService;
     }
 
     public ResponseBean<TemplateMast> createTemplate(TemplateMastDto templateMastDto) {
@@ -41,13 +46,11 @@ public class TemplateMastService {
             Optional<TemplateMast> optionalTemplateMast = templateMastRepository.findById(templateMastDto.getId());
             if (optionalTemplateMast.isPresent()) {
                 template = optionalTemplateMast.get();
-            } else {
-                return new ResponseBean<>(HttpStatus.NOT_FOUND, "Template not found", "Template with given ID does not exist", null);
             }
         }
         updateTemplateDetails(template, templateMastDto);
         TemplateMast savedTemplate = templateMastRepository.save(template);
-        return new ResponseBean<>(HttpStatus.OK, "Template added successfully", "Template added successfully", savedTemplate);
+        return new ResponseBean<>(HttpStatus.OK, messageService.getMessage("TEMPLATE_ADD"), messageService.getMessage("TEMPLATE_ADD"), savedTemplate);
     }
 
     private void updateTemplateDetails(TemplateMast template, TemplateMastDto templateMastDto) {
@@ -83,15 +86,15 @@ public class TemplateMastService {
             templateMasts = templateMastRepository.findAllByEventId(templateMastFilterRequest.getEventId(), pageable);
         }
         templateMasts.getContent();
-        return new ResponseBean<>(HttpStatus.OK, HttpStatus.OK.value(), "Template fetch successfully", "Template fetch successfully", templateMasts.getContent(), new Pagination((int) templateMasts.getTotalElements(), templateMastFilterRequest.getPage(), templateMastFilterRequest.getSize()));
+        return new ResponseBean<>(HttpStatus.OK, HttpStatus.OK.value(), messageService.getMessage("TEMPLATE_FETCH"), messageService.getMessage("TEMPLATE_FETCH"), templateMasts.getContent(), new Pagination((int) templateMasts.getTotalElements(), templateMastFilterRequest.getPage(), templateMastFilterRequest.getSize()));
     }
 
     public ResponseBean<?> getTemplateById(int id) {
         Optional<TemplateMast> templateMast = templateMastRepository.findById(id);
         if (templateMast.isPresent()) {
-            return new ResponseBean<>(HttpStatus.OK, "Template fetch successfully", "Template fetch successfully", templateMast.get());
+            return new ResponseBean<>(HttpStatus.OK, messageService.getMessage("TEMPLATE_FETCH"), messageService.getMessage("TEMPLATE_FETCH"), templateMast.get());
         }
-        return new ResponseBean<>(HttpStatus.OK, "Template fetch successfully", "Template fetch successfully", null);
+        return new ResponseBean<>(HttpStatus.OK, messageService.getMessage("TEMPLATE_FETCH"), messageService.getMessage("TEMPLATE_FETCH"), null);
 
     }
 

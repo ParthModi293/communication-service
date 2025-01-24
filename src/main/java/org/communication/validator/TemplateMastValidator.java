@@ -1,6 +1,7 @@
 package org.communication.validator;
 
-import org.communication.Exception.TemplateMastException;
+import org.common.exception.ValidationException;
+import org.communication.config.MessageService;
 import org.communication.dto.TemplateMastDto;
 import org.communication.repository.MailEventRepository;
 import org.communication.repository.TemplateMastRepository;
@@ -12,24 +13,26 @@ public class TemplateMastValidator {
 
     private final TemplateMastRepository templateMastRepository;
     private final MailEventRepository mailEventRepository;
+    private final MessageService messageService;
 
-    public TemplateMastValidator(TemplateMastRepository templateMastRepository, MailEventRepository mailEventRepository) {
+    public TemplateMastValidator(TemplateMastRepository templateMastRepository, MailEventRepository mailEventRepository, MessageService messageService) {
         this.templateMastRepository = templateMastRepository;
         this.mailEventRepository = mailEventRepository;
+        this.messageService = messageService;
     }
 
     public void validateTemplateMast(TemplateMastDto templateMastDto) {
 
         if (!mailEventRepository.existsById(templateMastDto.getEventId())) {
-            throw new TemplateMastException(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, "This Event is not available", "This Event is not available", templateMastDto);
+            throw new ValidationException(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, messageService.getMessage("EVENT_NOT_AVAILABLE"), messageService.getMessage("EVENT_NOT_AVAILABLE"), templateMastDto);
         }
         if (templateMastDto.getId() != null && templateMastDto.getEventId() > 0) {
             if (templateMastRepository.existsByTemplateNameAndEventIdAndIdNot(templateMastDto.getTemplateName(), templateMastDto.getEventId(), templateMastDto.getId())) {
-                throw new TemplateMastException(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, "Template name is already exist on this event", "Template name is already exist on this event", templateMastDto);
+                throw new ValidationException(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, messageService.getMessage("TEMPLATE_EXIST"), messageService.getMessage("TEMPLATE_EXIST"), templateMastDto);
             }
         } else {
             if (templateMastRepository.existsByTemplateNameAndEventId(templateMastDto.getTemplateName(), templateMastDto.getEventId())) {
-                throw new TemplateMastException(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, "Template name is already exist on this event", "Template name is already exist on this event", templateMastDto);
+                throw new ValidationException(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, messageService.getMessage("TEMPLATE_EXIST"), messageService.getMessage("TEMPLATE_EXIST"), templateMastDto);
             }
         }
     }

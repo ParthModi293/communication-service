@@ -1,13 +1,17 @@
 package org.communication.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "template_details")
 public class TemplateDetails {
 
@@ -39,4 +43,14 @@ public class TemplateDetails {
     @Column(name = "from_email_id")
     private String fromEmailId;
 
+    public TemplateDetails(String subject, String body, int templateMastId, Double version, LocalDateTime createdAt, LocalDateTime updatedAt, String isActive, String fromEmailId) {
+        this.subject = subject;
+        this.body = body;
+        this.templateMastId = templateMastId;
+        this.version = version;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.isActive = isActive;
+        this.fromEmailId = fromEmailId;
+    }
 }
