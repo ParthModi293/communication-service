@@ -10,8 +10,6 @@ import org.communication.dto.TemplateMastFilterRequest;
 import org.communication.entity.TemplateMast;
 import org.communication.repository.TemplateMastRepository;
 import org.communication.validator.TemplateMastValidator;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -67,10 +65,10 @@ public class TemplateMastService {
             template.setEventId(templateMastDto.getEventId());
         }
         if (templateMastDto.getId() != null && templateMastDto.getId() > 0) {
-            template.setUpdatedAt(LocalDateTime.now());
+            template.setUpdatedAt(LocalDateTime.now().toString());
         } else {
-            template.setCreatedAt(LocalDateTime.now());
-            template.setUpdatedAt(LocalDateTime.now());
+            template.setCreatedAt(LocalDateTime.now().toString());
+            template.setUpdatedAt(LocalDateTime.now().toString());
         }
 
     }

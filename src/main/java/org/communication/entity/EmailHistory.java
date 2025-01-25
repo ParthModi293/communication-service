@@ -24,16 +24,13 @@ public class EmailHistory {
     private String fromAddress;
 
     @NotNull
-    @Lob
-    @Column(name = "to_addresses", nullable = false)
+    @Column(name = "to_addresses", nullable = false, length = Integer.MAX_VALUE)
     private String toAddresses;
 
-    @Lob
-    @Column(name = "cc_addresses")
+    @Column(name = "cc_addresses", length = Integer.MAX_VALUE)
     private String ccAddresses;
 
-    @Lob
-    @Column(name = "bcc_addresses")
+    @Column(name = "bcc_addresses", length = Integer.MAX_VALUE)
     private String bccAddresses;
 
     @Size(max = 255)
@@ -49,8 +46,7 @@ public class EmailHistory {
     @Column(name = "status", nullable = false, length = 50)
     private String status;
 
-    @Lob
-    @Column(name = "error_message")
+    @Column(name = "error_message", length = Integer.MAX_VALUE)
     private String errorMessage;
 
     @Size(max = 50)
@@ -58,11 +54,10 @@ public class EmailHistory {
     private String version;
 
     @NotNull
-    @Column(name = "timestamp", nullable = false)
+    @Column(name = "\"timestamp\"", nullable = false)
     private Instant timestamp;
 
-    @Lob
-    @Column(name = "attachments")
+    @Column(name = "attachments", length = Integer.MAX_VALUE)
     private String attachments;
 
 }

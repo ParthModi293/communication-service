@@ -1,34 +1,47 @@
 package org.communication.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "template_mast")
 public class TemplateMast {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
+    @NotNull
     @Column(name = "event_id", nullable = false)
-    private int eventId;
+    private Integer eventId;
 
-    @Column(name = "template_name", length = 255, nullable = false)
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "template_name", nullable = false)
     private String templateName;
 
+    @NotNull
     @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
+    private String createdAt;
 
+    @NotNull
     @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
+    private String  updatedAt;
 
-    @Column(name = "description", length = 255)
+    @Size(max = 255)
+    @Column(name = "description")
     private String description;
 
-    @Column(name = "priority", length = 45)
+    @Size(max = 10)
+    @NotNull
+    @Column(name = "priority", nullable = false, length = 10)
     private String priority;
+
 }

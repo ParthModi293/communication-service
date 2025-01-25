@@ -1,17 +1,24 @@
 package org.communication.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "mail_event")
 public class MailEvent {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
-    @Column(name = "event_name", length = 255, nullable = false)
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "event_name", nullable = false)
     private String eventName;
+
 }

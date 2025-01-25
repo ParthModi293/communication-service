@@ -3,7 +3,7 @@ package org.communication.validator;
 import org.common.exception.ValidationException;
 import org.communication.config.MessageService;
 import org.communication.dto.TemplateDetailsDto;
-import org.communication.repository.TemplateDetailsRepository;
+import org.communication.repository.TemplateDetailRepository;
 import org.communication.repository.TemplateMastRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -13,12 +13,12 @@ import org.springframework.stereotype.Service;
 public class TemplateDetailsValidator {
 
     private final TemplateMastRepository templateMastRepository;
-    private final TemplateDetailsRepository templateDetailsRepository;
+    private final TemplateDetailRepository templateDetailRepository;
     private final MessageService messageService;
 
-    public TemplateDetailsValidator(TemplateMastRepository templateMastRepository, TemplateDetailsRepository templateDetailsRepository, MessageService messageService) {
+    public TemplateDetailsValidator(TemplateMastRepository templateMastRepository, TemplateDetailRepository templateDetailRepository, MessageService messageService) {
         this.templateMastRepository = templateMastRepository;
-        this.templateDetailsRepository = templateDetailsRepository;
+        this.templateDetailRepository = templateDetailRepository;
         this.messageService = messageService;
     }
 
@@ -28,7 +28,7 @@ public class TemplateDetailsValidator {
             throw new ValidationException(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, messageService.getMessage("EVENT_TEMPLATE_NOT_AVAILABLE"), messageService.getMessage("EVENT_TEMPLATE_NOT_AVAILABLE"), null);
         }
         if (templateDetailsDto.getId() > 0) {
-            if (!templateDetailsRepository.existsById(templateDetailsDto.getId())) {
+            if (!templateDetailRepository.existsById(templateDetailsDto.getId())) {
                 throw new ValidationException(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, messageService.getMessage("TEMPLATE_DETAIL_NOT_AVAILABLE"), messageService.getMessage("TEMPLATE_DETAIL_NOT_AVAILABLE"), null);
             }
         }
@@ -46,7 +46,7 @@ public class TemplateDetailsValidator {
             throw new ValidationException(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, messageService.getMessage("TEMPLATE_MAST_ID_NOT_VALID"), messageService.getMessage("TEMPLATE_MAST_ID_NOT_VALID"), null);
         }
 
-        if (!templateDetailsRepository.existsByTemplateMastId(templateMastId)) {
+        if (!templateDetailRepository.existsByTemplateMastId(templateMastId)) {
             throw new ValidationException(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, messageService.getMessage("TEMPLATE_MAST_TEMPLATE_DETAIL_NOT_AVAILABLE"), messageService.getMessage("TEMPLATE_MAST_TEMPLATE_DETAIL_NOT_AVAILABLE"), null);
         }
     }
