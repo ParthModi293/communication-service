@@ -8,6 +8,7 @@ import org.communication.entity.EmailHistory;
 import org.communication.repository.EmailHistoryRepository;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
@@ -15,12 +16,13 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class EmailService {
+@Service
+public class EmailSenderService {
 
     private final DynamicMailSender dynamicMailSender;
     private final EmailHistoryRepository emailHistoryRepository;
 
-    public EmailService(DynamicMailSender dynamicMailSender, EmailHistoryRepository emailHistoryRepository) {
+    public EmailSenderService(DynamicMailSender dynamicMailSender, EmailHistoryRepository emailHistoryRepository) {
         this.dynamicMailSender = dynamicMailSender;
         this.emailHistoryRepository = emailHistoryRepository;
     }
@@ -66,7 +68,7 @@ public class EmailService {
             }
 
             if (emailDto.getAttachments() != null && !emailDto.getAttachments().isEmpty()) {
-                for(MultipartFile file : emailDto.getAttachments()) {
+                for(MultipartFile file : emailDto   .getAttachments()) {
                     helper.addAttachment(Objects.requireNonNull(file.getOriginalFilename()), file);
                 }
             }
