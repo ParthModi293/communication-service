@@ -24,19 +24,21 @@ public interface TemplateDetailRepository extends JpaRepository<TemplateDetail, 
                 td.from_email_id AS fromEmailId, 
                 ec.password AS password, 
                 ec.port AS port, 
-                ec.host AS host
+                ec.host AS host,
+                 ec.max_limit AS maxLimit,
             FROM 
-                :db.template_details td
+                public.template_details td
             INNER JOIN 
-                :db.template_mast tm ON td.template_mast_id = tm.id
+            public.template_mast tm ON td.template_mast_id = tm.id
             INNER JOIN 
-                :db.email_configuration ec ON td.from_email_id = ec.user_name
+                public.email_configuration ec ON td.from_email_id = ec.user_name
             WHERE 
-                tm.template_name = :templateName 
+                tm.id = :templateId 
                 AND is_active = 'Y'
             ORDER BY 
                 td.created_at DESC 
             LIMIT 1
             """, nativeQuery = true)
-    Map<String, Object> getMailDetails(@Param("templateName") String templateName, @Param("db") String db);
+    Map<String, Object> getMailDetails(@Param("templateId") String templateId, @Param("db") String db);
+
 }

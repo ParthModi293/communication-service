@@ -1,16 +1,22 @@
 package org.communication.service;
 
 import jakarta.mail.internet.MimeMessage;
+
+import org.common.common.Const;
+import org.communication.common.Enum;
 import org.communication.dto.DynamicMailSender;
 import org.communication.dto.EmailDto;
 import org.communication.dto.EmailPropertiesDto;
 import org.communication.entity.EmailHistory;
 import org.communication.repository.EmailHistoryRepository;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -45,12 +51,12 @@ public class EmailSenderService {
         emailHistory.setSubject(emailDto.getSubject());
         emailHistory.setBody(emailDto.getBody());
         emailHistory.setVersion(emailDto.getVersion());
-        emailHistory.setTimestamp(Instant.from(LocalDateTime.now()));
+        emailHistory.setTimestamp(LocalDateTime.now());
 
-        if (emailDto.getAttachments() != null) {
-            String attachments = emailDto.getAttachments().stream().map(MultipartFile::getOriginalFilename).collect(Collectors.joining(","));
+      /*  if (emailDto.getAttachments() != null) {
+            String attachments = emailDto.getAttachments().stream().map(String::chars).collect(Collectors.joining(","));
             emailHistory.setAttachments(attachments);
-        }
+        }*/
 
         try {
             MimeMessage message = mailSender.createMimeMessage();
@@ -67,16 +73,20 @@ public class EmailSenderService {
                 helper.setBcc(emailDto.getBcc().toArray(new String[0]));
             }
 
-            if (emailDto.getAttachments() != null && !emailDto.getAttachments().isEmpty()) {
-                for(MultipartFile file : emailDto   .getAttachments()) {
-                    helper.addAttachment(Objects.requireNonNull(file.getOriginalFilename()), file);
+            FileSystemResource file = new FileSystemResource(new File(emailDto.getAttachments().get(0)));
+
+            helper.addAttachment(file.getFilename(), file);
+
+          /*  if (emailDto.getAttachments() != null && !emailDto.getAttachments().isEmpty()) {
+                for(String f : emailDto.getAttachments()) {
+                    helper.addAttachment(f.);
                 }
-            }
+            }*/
 
             mailSender.send(message);
-            emailHistory.setStatus("SUCCESS");
+            emailHistory.setStatus(String.valueOf(Enum.STATUS.SUCCESS));
         } catch (Exception e) {
-            emailHistory.setStatus("FAILED");
+            emailHistory.setStatus(String.valueOf(Enum.STATUS.FAILED));
             emailHistory.setErrorMessage(e.getMessage());
         } finally {
             this.emailHistoryRepository.save(emailHistory);

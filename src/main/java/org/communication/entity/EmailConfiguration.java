@@ -35,4 +35,8 @@ public class EmailConfiguration {
     @Column(name = "port", nullable = false)
     private Integer port;
 
+   @NotNull
+    @Column(name = "max_limit", nullable = false)
+    private Integer maxLimit;
+
 }

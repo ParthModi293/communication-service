@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -55,7 +56,7 @@ public class EmailHistory {
 
     @NotNull
     @Column(name = "\"timestamp\"", nullable = false)
-    private Instant timestamp;
+    private LocalDateTime timestamp;
 
     @Column(name = "attachments", length = Integer.MAX_VALUE)
     private String attachments;
