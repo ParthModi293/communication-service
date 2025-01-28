@@ -20,6 +20,7 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -35,6 +36,13 @@ public class EmailSenderService {
         this.emailHistoryRepository = emailHistoryRepository;
     }
 
+    /**
+     *  Sends an email using dynamically created JavaMailSender based on the provided email properties.
+     * method take emailDto request and set value to EmailHistory For record . After
+     * @param emailDto The {@code EmailDto} object containing email details such as recipients,
+     *                  subject, body,cc,bcc,attachments,version.
+     * The email history is recorded in the database with status updates.
+     */
     public void sendEmail(EmailDto emailDto) {
         EmailPropertiesDto emailProperties = EmailPropertiesDto.builder()
                 .username(emailDto.getFrom())
@@ -55,10 +63,7 @@ public class EmailSenderService {
         emailHistory.setVersion(emailDto.getVersion());
         emailHistory.setTimestamp(LocalDateTime.now());
 
-        List<AttachmentDto> attachments = emailDto.getAttachments().stream()
-                .map(filePath -> new AttachmentDto(filePath, extractFileName(filePath)))
-                .collect(Collectors.toList());
-        emailHistory.setAttachments(attachments);
+        emailHistory.setAttachments(emailDto.getAttachments()!=null ? Collections.singletonList(String.join(",", emailDto.getAttachments())) :null);
 
         try {
             MimeMessage message = mailSender.createMimeMessage();
@@ -70,7 +75,6 @@ public class EmailSenderService {
             if (emailDto.getCc() != null && !emailDto.getCc().isEmpty()) {
                 helper.setCc(emailDto.getCc().toArray(new String[0]));
             }
-
             if (emailDto.getBcc() != null && !emailDto.getBcc().isEmpty()) {
                 helper.setBcc(emailDto.getBcc().toArray(new String[0]));
             }
@@ -78,7 +82,7 @@ public class EmailSenderService {
             if(attachmentFile != null && !attachmentFile.isEmpty()){
                 for(String attachment : attachmentFile){
                     FileSystemResource file = new FileSystemResource(new File(attachment));
-                    helper.addAttachment(attachment, file);
+                    helper.addAttachment(file.getFilename(), file);
                 }
             }
 

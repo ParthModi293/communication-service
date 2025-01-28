@@ -25,7 +25,7 @@ public interface TemplateDetailRepository extends JpaRepository<TemplateDetail, 
                 ec.password AS password, 
                 ec.port AS port, 
                 ec.host AS host,
-                 ec.max_limit AS maxLimit,
+                 ec.max_limit AS maxLimit
             FROM 
                 public.template_details td
             INNER JOIN 
@@ -39,6 +39,6 @@ public interface TemplateDetailRepository extends JpaRepository<TemplateDetail, 
                 td.created_at DESC 
             LIMIT 1
             """, nativeQuery = true)
-    Map<String, Object> getMailDetails(@Param("templateId") String templateId, @Param("db") String db);
+    Map<String, Object> getMailDetails(@Param("templateId") int templateId, @Param("db") String db);
 
 }
