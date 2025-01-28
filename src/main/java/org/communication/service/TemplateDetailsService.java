@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 
@@ -52,6 +53,16 @@ public class TemplateDetailsService {
     public TemplateDetail getTemplateDetailsByTemplateMastId(int templateMastId) {
         templateDetailsValidator.validateTemplateMastId(templateMastId);
         return templateDetailRepository.findFirstByTemplateMastIdOrderByCreatedAtDesc(templateMastId);
+    }
+
+    public ResponseBean<?> getAllTemplateDetail(int templateMastId) {
+        List<TemplateDetail> templateDetailsByTemplateMastId = getAllTemplateDetailsByTemplateMastId(templateMastId);
+        return new ResponseBean<>(HttpStatus.OK, messageService.getMessage("TEMPLATE_DETAILS_FETCH"), messageService.getMessage("TEMPLATE_DETAILS_FETCH"), templateDetailsByTemplateMastId);
+    }
+
+    public List<TemplateDetail> getAllTemplateDetailsByTemplateMastId(int templateMastId) {
+        templateDetailsValidator.validateTemplateMastId(templateMastId);
+        return templateDetailRepository.findAllByTemplateMastIdOrderByCreatedAtDesc(templateMastId);
     }
 
     public static double generateVersionSeries(double currentVersion) {

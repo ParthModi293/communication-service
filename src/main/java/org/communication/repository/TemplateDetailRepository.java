@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -41,4 +42,5 @@ public interface TemplateDetailRepository extends JpaRepository<TemplateDetail, 
             """, nativeQuery = true)
     Map<String, Object> getMailDetails(@Param("templateId") String templateId, @Param("db") String db);
 
+    List<TemplateDetail> findAllByTemplateMastIdOrderByCreatedAtDesc(int templateMastId);
 }
