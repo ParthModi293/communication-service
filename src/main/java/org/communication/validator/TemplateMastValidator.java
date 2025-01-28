@@ -1,5 +1,6 @@
 package org.communication.validator;
 
+import org.common.common.Const;
 import org.common.exception.ValidationException;
 import org.communication.config.MessageService;
 import org.communication.dto.TemplateMastDto;
@@ -24,15 +25,15 @@ public class TemplateMastValidator {
     public void validateTemplateMast(TemplateMastDto templateMastDto) {
 
         if (!mailEventRepository.existsById(templateMastDto.getEventId())) {
-            throw new ValidationException(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, messageService.getMessage("EVENT_NOT_AVAILABLE"), messageService.getMessage("EVENT_NOT_AVAILABLE"), templateMastDto);
+            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.BAD_REQUEST, messageService.getMessage("EVENT_NOT_AVAILABLE"), messageService.getMessage("EVENT_NOT_AVAILABLE"), templateMastDto);
         }
         if (templateMastDto.getId() != null && templateMastDto.getEventId() > 0) {
             if (templateMastRepository.existsByTemplateNameAndEventIdAndIdNot(templateMastDto.getTemplateName(), templateMastDto.getEventId(), templateMastDto.getId())) {
-                throw new ValidationException(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, messageService.getMessage("TEMPLATE_EXIST"), messageService.getMessage("TEMPLATE_EXIST"), templateMastDto);
+                throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.BAD_REQUEST, messageService.getMessage("TEMPLATE_EXIST"), messageService.getMessage("TEMPLATE_EXIST"), templateMastDto);
             }
         } else {
             if (templateMastRepository.existsByTemplateNameAndEventId(templateMastDto.getTemplateName(), templateMastDto.getEventId())) {
-                throw new ValidationException(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, messageService.getMessage("TEMPLATE_EXIST"), messageService.getMessage("TEMPLATE_EXIST"), templateMastDto);
+                throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.BAD_REQUEST, messageService.getMessage("TEMPLATE_EXIST"), messageService.getMessage("TEMPLATE_EXIST"), templateMastDto);
             }
         }
     }

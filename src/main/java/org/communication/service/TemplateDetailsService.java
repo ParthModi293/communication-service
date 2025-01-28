@@ -28,11 +28,10 @@ public class TemplateDetailsService {
     public ResponseBean<TemplateDetail> createTemplateDetail(TemplateDetailsDto templateDetailsDto) {
         templateDetailsValidator.validateTemplateDetails(templateDetailsDto);
         double result = 0.0;
-        if (templateDetailsDto.getId() > 0) {
-            TemplateDetail existTemplateDetails = templateDetailRepository.findById(templateDetailsDto.getId()).orElse(null);
+        TemplateDetail existTemplateDetails = getTemplateDetailsByTemplateMastId(templateDetailsDto.getTemplateMastId());
+        if (existTemplateDetails.getId() > 0) {
             result = existTemplateDetails.getVersion();
         }
-
         TemplateDetail templateDetails = new TemplateDetail(templateDetailsDto.getSubject(), templateDetailsDto.getBody(),
                 templateDetailsDto.getTemplateMastId(), generateVersionSeries(result), LocalDateTime.now(), LocalDateTime.now(),
                 templateDetailsDto.getIsActive(), templateDetailsDto.getFromEmailId());
