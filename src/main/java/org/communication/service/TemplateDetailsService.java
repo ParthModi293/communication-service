@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-
 public class TemplateDetailsService {
 
     private final TemplateDetailsValidator templateDetailsValidator;

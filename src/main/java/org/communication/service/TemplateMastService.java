@@ -75,7 +75,6 @@ public class TemplateMastService {
 
     public ResponseBean<?> getAllTemplates(TemplateMastFilterRequest templateMastFilterRequest) {
 
-//        Sort sort = Sort.by("created_at").descending();
         Pageable pageable = PageRequest.of(templateMastFilterRequest.getPage() - 1, templateMastFilterRequest.getSize());
         Page<TemplateMast> templateMasts;
         if (StringUtils.isNotBlank(templateMastFilterRequest.getSearchText()) && Pattern.matches(Const.PatternCheck.SearchText, templateMastFilterRequest.getSearchText())) {
@@ -83,7 +82,7 @@ public class TemplateMastService {
         } else {
             templateMasts = templateMastRepository.findAllByEventId(templateMastFilterRequest.getEventId(), pageable);
         }
-        templateMasts.getContent();
+
         return new ResponseBean<>(HttpStatus.OK, HttpStatus.OK.value(), messageService.getMessage("TEMPLATE_FETCH"), messageService.getMessage("TEMPLATE_FETCH"), templateMasts.getContent(), new Pagination((int) templateMasts.getTotalElements(), templateMastFilterRequest.getPage(), templateMastFilterRequest.getSize()));
     }
 
