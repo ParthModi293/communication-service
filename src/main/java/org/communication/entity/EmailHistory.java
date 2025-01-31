@@ -61,6 +61,6 @@ public class EmailHistory {
     private LocalDateTime timestamp;
 
     @Column(name = "attachments", length = Integer.MAX_VALUE)
-    private List<AttachmentDto> attachments;
+    private List<String> attachments;
 
 }

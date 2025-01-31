@@ -8,7 +8,6 @@ import org.communication.repository.TemplateDetailRepository;
 import org.communication.validator.TemplateDetailsValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -70,3 +69,4 @@ public class TemplateDetailsService {
         return Double.parseDouble(String.format("%.1f", currentVersion));
     }
 }
+
