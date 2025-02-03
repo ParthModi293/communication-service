@@ -8,11 +8,10 @@ import org.communication.repository.TemplateDetailRepository;
 import org.communication.validator.TemplateDetailsValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
-
 public class TemplateDetailsService {
 
     private final TemplateDetailsValidator templateDetailsValidator;
@@ -28,11 +27,10 @@ public class TemplateDetailsService {
     public ResponseBean<TemplateDetail> createTemplateDetail(TemplateDetailsDto templateDetailsDto) {
         templateDetailsValidator.validateTemplateDetails(templateDetailsDto);
         double result = 0.0;
-        if (templateDetailsDto.getId() > 0) {
-            TemplateDetail existTemplateDetails = templateDetailRepository.findById(templateDetailsDto.getId()).orElse(null);
+        TemplateDetail existTemplateDetails = getTemplateDetailsByTemplateMastId(templateDetailsDto.getTemplateMastId());
+        if (existTemplateDetails.getId() > 0) {
             result = existTemplateDetails.getVersion();
         }
-
         TemplateDetail templateDetails = new TemplateDetail(templateDetailsDto.getSubject(), templateDetailsDto.getBody(),
                 templateDetailsDto.getTemplateMastId(), generateVersionSeries(result), LocalDateTime.now(), LocalDateTime.now(),
                 templateDetailsDto.getIsActive(), templateDetailsDto.getFromEmailId());
@@ -55,9 +53,20 @@ public class TemplateDetailsService {
         return templateDetailRepository.findFirstByTemplateMastIdOrderByCreatedAtDesc(templateMastId);
     }
 
+    public ResponseBean<?> getAllTemplateDetail(int templateMastId) {
+        List<TemplateDetail> templateDetailsByTemplateMastId = getAllTemplateDetailsByTemplateMastId(templateMastId);
+        return new ResponseBean<>(HttpStatus.OK, messageService.getMessage("TEMPLATE_DETAILS_FETCH"), messageService.getMessage("TEMPLATE_DETAILS_FETCH"), templateDetailsByTemplateMastId);
+    }
+
+    public List<TemplateDetail> getAllTemplateDetailsByTemplateMastId(int templateMastId) {
+        templateDetailsValidator.validateTemplateMastId(templateMastId);
+        return templateDetailRepository.findAllByTemplateMastIdOrderByCreatedAtDesc(templateMastId);
+    }
+
     public static double generateVersionSeries(double currentVersion) {
         currentVersion += 0.1;
         currentVersion = Math.round(currentVersion * 10.0) / 10.0;
         return Double.parseDouble(String.format("%.1f", currentVersion));
     }
 }
+

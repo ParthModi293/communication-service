@@ -6,5 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EmailConfigurationRepository extends JpaRepository<EmailConfiguration, Integer> {
-    EmailConfiguration findByUserName(String userName);
 }

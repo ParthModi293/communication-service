@@ -28,6 +28,15 @@ public @interface Enum {
         }
     }
 
+    enum STATUS{
+        SUCCESS("SUCCESS"),
+        FAILED("FAILED");
+
+        private final String value;
+        STATUS(String value) {this.value=value;}
+        public String getValue() {return value;}
+    }
+
     String message() default "Invalid value!";
 
     Class<?>[] groups() default {};

@@ -5,8 +5,11 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.communication.dto.AttachmentDto;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -55,9 +58,9 @@ public class EmailHistory {
 
     @NotNull
     @Column(name = "\"timestamp\"", nullable = false)
-    private Instant timestamp;
+    private LocalDateTime timestamp;
 
     @Column(name = "attachments", length = Integer.MAX_VALUE)
-    private String attachments;
+    private List<String> attachments;
 
 }

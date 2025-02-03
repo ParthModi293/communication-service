@@ -1,5 +1,6 @@
 package org.communication.validator;
 
+import org.common.common.Const;
 import org.common.exception.ValidationException;
 import org.communication.config.MessageService;
 import org.communication.dto.TemplateDetailsDto;
@@ -25,12 +26,7 @@ public class TemplateDetailsValidator {
     public void validateTemplateDetails(TemplateDetailsDto templateDetailsDto) {
 
         if (!templateMastRepository.existsById(templateDetailsDto.getTemplateMastId())) {
-            throw new ValidationException(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, messageService.getMessage("EVENT_TEMPLATE_NOT_AVAILABLE"), messageService.getMessage("EVENT_TEMPLATE_NOT_AVAILABLE"), null);
-        }
-        if (templateDetailsDto.getId() > 0) {
-            if (!templateDetailRepository.existsById(templateDetailsDto.getId())) {
-                throw new ValidationException(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, messageService.getMessage("TEMPLATE_DETAIL_NOT_AVAILABLE"), messageService.getMessage("TEMPLATE_DETAIL_NOT_AVAILABLE"), null);
-            }
+            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.OK, messageService.getMessage("EVENT_TEMPLATE_NOT_AVAILABLE"), messageService.getMessage("EVENT_TEMPLATE_NOT_AVAILABLE"), null);
         }
 //        Document doc = Jsoup.parse(URLDecoder.decode(tncBean.getTncText(), StandardCharsets.UTF_8.toString()));
 //        System.out.println("before:" + doc);
@@ -43,11 +39,11 @@ public class TemplateDetailsValidator {
     public void validateTemplateMastId(int templateMastId) {
 
         if (templateMastId <= 0) {
-            throw new ValidationException(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, messageService.getMessage("TEMPLATE_MAST_ID_NOT_VALID"), messageService.getMessage("TEMPLATE_MAST_ID_NOT_VALID"), null);
+            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.OK, messageService.getMessage("TEMPLATE_MAST_ID_NOT_VALID"), messageService.getMessage("TEMPLATE_MAST_ID_NOT_VALID"), null);
         }
 
         if (!templateDetailRepository.existsByTemplateMastId(templateMastId)) {
-            throw new ValidationException(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, messageService.getMessage("TEMPLATE_MAST_TEMPLATE_DETAIL_NOT_AVAILABLE"), messageService.getMessage("TEMPLATE_MAST_TEMPLATE_DETAIL_NOT_AVAILABLE"), null);
+            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.OK, messageService.getMessage("TEMPLATE_MAST_TEMPLATE_DETAIL_NOT_AVAILABLE"), messageService.getMessage("TEMPLATE_MAST_TEMPLATE_DETAIL_NOT_AVAILABLE"), null);
         }
     }
 
