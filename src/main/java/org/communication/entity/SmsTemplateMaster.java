@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.Instant;
+
 @Getter
 @Setter
 @Entity
@@ -46,5 +48,19 @@ public class SmsTemplateMaster {
     @NotNull
     @Column(name = "sms_master_id", nullable = false)
     private Integer smsMasterId;
+
+    @Size(max = 45)
+    @Column(name = "created_by", length = 45)
+    private String createdBy;
+
+    @Column(name = "created_at")
+    private Instant createdAt;
+
+    @Size(max = 45)
+    @Column(name = "updated_by", length = 45)
+    private String updatedBy;
+
+    @Column(name = "updated_at")
+    private Instant updatedAt;
 
 }
