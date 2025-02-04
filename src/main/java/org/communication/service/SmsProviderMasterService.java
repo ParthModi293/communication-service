@@ -1,6 +1,7 @@
 package org.communication.service;
 
 import org.common.common.ResponseBean;
+import org.communication.config.MessageService;
 import org.communication.dto.SmsProviderMasterDto;
 import org.communication.entity.SmsProviderMaster;
 import org.communication.repository.SmsProviderMasterRepository;
@@ -17,10 +18,12 @@ public class SmsProviderMasterService {
 
     private final SmsProviderMasterRepository smsProviderMasterRepository;
     private final SmsProviderMasterValidator smsProviderMasterValidator;
+    private final MessageService messageService;
 
-    public SmsProviderMasterService(SmsProviderMasterRepository smsProviderMasterRepository, SmsProviderMasterValidator smsProviderMasterValidator) {
+    public SmsProviderMasterService(SmsProviderMasterRepository smsProviderMasterRepository, SmsProviderMasterValidator smsProviderMasterValidator, MessageService messageService) {
         this.smsProviderMasterRepository = smsProviderMasterRepository;
         this.smsProviderMasterValidator = smsProviderMasterValidator;
+        this.messageService = messageService;
     }
 
 
@@ -32,12 +35,12 @@ public class SmsProviderMasterService {
         provider.setApiKey(smsProviderMasterDto.getApiKey());
         provider.setUrl(smsProviderMasterDto.getUrl());
         provider.setCreatedAt(Instant.now());
-        provider.setUpdatedAt(Instant.now());
-        provider.setCreatedBy(smsProviderMasterDto.getCreatedBy());
-        provider.setUpdatedBy(smsProviderMasterDto.getUpdatedBy());
+//        provider.setUpdatedAt(Instant.now());
+        provider.setCreatedBy("1");
+//        provider.setUpdatedBy(smsProviderMasterDto.getUpdatedBy());
          smsProviderMasterRepository.save(provider);
 
-        return new ResponseBean<>(HttpStatus.OK,"Sms provider added successfully","Sms provider added successfully",provider);
+        return new ResponseBean<>(HttpStatus.OK, messageService.getMessage("SMS_PROVIDER_ADD"),messageService.getMessage("SMS_PROVIDER_ADD"),provider);
 
     }
 }

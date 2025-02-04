@@ -20,7 +20,7 @@ public interface TemplateMastRepository extends JpaRepository<TemplateMast, Inte
     int countAllByEventId(int eventId);
 
     @Query(value = "SELECT * FROM template_mast t WHERE t.event_id = :eventId AND (t.template_name LIKE %:searchText% OR t.description LIKE %:searchText%)",nativeQuery = true)
-    Page<TemplateMast> findByEventIdAndTemplateNameLike(@Param("eventId") Integer eventId, @Param("searchText") String searchText, Pageable pageable);
+    Page<TemplateMast>  findByEventIdAndTemplateNameLike(@Param("eventId") Integer eventId, @Param("searchText") String searchText, Pageable pageable);
 
     @Query(value = "SELECT t FROM template_mast t WHERE t.event_id = :eventId AND (t.template_name LIKE %:searchText% OR t.description LIKE %:searchText%)",nativeQuery = true)
     List<TemplateMast> findByEventIdAndTemplateNameLike(@Param("eventId") Integer eventId, @Param("searchText") String searchText);

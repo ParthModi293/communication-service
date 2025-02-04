@@ -28,6 +28,11 @@ public class SmsMaster {
     @Column(name = "event_id", nullable = false)
     private Integer eventId;
 
+    @Size(max = 10)
+    @NotNull
+    @Column(name = "priority", nullable = false, length = 10)
+    private String priority;
+
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")
     private Instant createdAt;
@@ -36,7 +41,6 @@ public class SmsMaster {
     @Column(name = "created_by")
     private String createdBy;
 
-    @NotNull
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "updated_at")
     private Instant updatedAt;

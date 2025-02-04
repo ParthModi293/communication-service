@@ -1,6 +1,7 @@
 package org.communication.service;
 
 import org.common.common.ResponseBean;
+import org.communication.config.MessageService;
 import org.communication.dto.SmsSenderMasterDto;
 import org.communication.entity.SmsSenderMaster;
 import org.communication.repository.SmsSenderMasterRepository;
@@ -16,10 +17,12 @@ public class SmsSenderMasterService {
 
     private final SmsSenderMasterValidator validator;
     private final SmsSenderMasterRepository senderMasterRepository;
+    private final MessageService messageService;
 
-    public SmsSenderMasterService(SmsSenderMasterValidator validator, SmsSenderMasterRepository senderMasterRepository) {
+    public SmsSenderMasterService(SmsSenderMasterValidator validator, SmsSenderMasterRepository senderMasterRepository, MessageService messageService) {
         this.validator = validator;
         this.senderMasterRepository = senderMasterRepository;
+        this.messageService = messageService;
     }
 
     @Transactional
@@ -32,11 +35,11 @@ public class SmsSenderMasterService {
         senderMaster.setServiceProviderId(requestDTO.getServiceProviderId());
         senderMaster.setIsActive(requestDTO.getIsActive());
         senderMaster.setCreatedAt(Instant.now());
-        senderMaster.setUpdatedAt(Instant.now());
-        senderMaster.setCreatedBy(requestDTO.getCreatedBy());
-        senderMaster.setUpdatedBy(requestDTO.getUpdatedBy());
+//        senderMaster.setUpdatedAt(Instant.now());
+        senderMaster.setCreatedBy("1");
+//        senderMaster.setUpdatedBy("1");
          senderMasterRepository.save(senderMaster);
-        return new ResponseBean<>(HttpStatus.OK,"Sms Sender added successfully","Sms Sender added successfully",senderMaster);
+        return new ResponseBean<>(HttpStatus.OK, messageService.getMessage("SMS_SENDER_ADD"),messageService.getMessage("SMS_SENDER_ADD"),senderMaster);
 
     }
 

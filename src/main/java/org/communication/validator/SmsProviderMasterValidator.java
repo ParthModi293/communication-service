@@ -1,6 +1,7 @@
 package org.communication.validator;
 
 import org.common.common.Const;
+import org.communication.config.MessageService;
 import org.communication.dto.SmsProviderMasterDto;
 import org.communication.repository.SmsProviderMasterRepository;
 import org.springframework.http.HttpStatus;
@@ -13,56 +14,78 @@ import org.common.exception.ValidationException;
 public class SmsProviderMasterValidator {
 
     private final SmsProviderMasterRepository smsProviderMasterRepository;
+    private final MessageService messageService;
 
-    public SmsProviderMasterValidator(SmsProviderMasterRepository smsProviderMasterRepository) {
+    public SmsProviderMasterValidator(SmsProviderMasterRepository smsProviderMasterRepository, MessageService messageService) {
         this.smsProviderMasterRepository = smsProviderMasterRepository;
+        this.messageService = messageService;
     }
 
     public void validateSmsProviderRequest(SmsProviderMasterDto dto) {
         if (!StringUtils.hasText(dto.getName())) {
-            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.BAD_REQUEST, "Provider name cannot be empty!", "Provider name cannot be empty!", null);
+            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.OK,
+                    messageService.getMessage("PROVIDER_NAME_REQUIRED"),
+                    messageService.getMessage("PROVIDER_NAME_REQUIRED"), null);
         }
 
         if (!StringUtils.hasText(dto.getApiKey())) {
-            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.BAD_REQUEST, "API key is required!", "API key is required!", null);
+            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.OK,
+                    messageService.getMessage("API_KEY_REQUIRED"),
+                    messageService.getMessage("API_KEY_REQUIRED"), null);
         }
 
         if (!StringUtils.hasText(dto.getUrl())) {
-            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.BAD_REQUEST, "URL is required!", "URL is required!", null);
+            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.OK,
+                    messageService.getMessage("URL_REQUIRED"),
+                    messageService.getMessage("URL_REQUIRED"), null);
         }
 
         if (dto.getName().length() > 255) {
-            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.BAD_REQUEST, "Provider name must be at most 255 characters!", "Provider name must be at most 255 characters!", null);
+            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.OK,
+                    messageService.getMessage("PROVIDER_NAME_MAX_LENGTH"),
+                    messageService.getMessage("PROVIDER_NAME_MAX_LENGTH"), null);
         }
 
         if (dto.getApiKey().length() > 255) {
-            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.BAD_REQUEST, "API key must be at most 255 characters!", "API key must be at most 255 characters!", null);
+            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.OK,
+                    messageService.getMessage("API_KEY_MAX_LENGTH"),
+                    messageService.getMessage("API_KEY_MAX_LENGTH"), null);
         }
 
         if (dto.getUrl().length() > 255) {
-            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.BAD_REQUEST, "URL must be at most 255 characters!", "URL must be at most 255 characters!", null);
+            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.OK,
+                    messageService.getMessage("URL_MAX_LENGTH"),
+                    messageService.getMessage("URL_MAX_LENGTH"), null);
         }
 
-        if (dto.getCreatedBy() != null && dto.getCreatedBy().length() > 255) {
-            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.BAD_REQUEST, "Created by must be at most 255 characters!", "Created by must be at most 255 characters!", null);
+        /*if (dto.getCreatedBy() != null && dto.getCreatedBy().length() > 255) {
+            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.OK,
+                    messageService.getMessage("CREATED_BY_MAX_LENGTH"),
+                    messageService.getMessage("CREATED_BY_MAX_LENGTH"), null);
         }
 
         if (dto.getUpdatedBy() != null && dto.getUpdatedBy().length() > 255) {
-            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.BAD_REQUEST, "Updated by must be at most 255 characters!", "Updated by must be at most 255 characters!", null);
+            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.OK,
+                    messageService.getMessage("UPDATED_BY_MAX_LENGTH"),
+                    messageService.getMessage("UPDATED_BY_MAX_LENGTH"), null);
+        }*/
+
+        if (smsProviderMasterRepository.existsByName(dto.getName())) {
+            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.OK,
+                    messageService.getMessage("PROVIDER_NAME_EXISTS"),
+                    messageService.getMessage("PROVIDER_NAME_EXISTS"), null);
         }
 
-        if(smsProviderMasterRepository.existsByName(dto.getName())){
-            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.BAD_REQUEST, "Provider Name is already exists", "Provider Name is already exists", null);
-
+        if (smsProviderMasterRepository.existsByApiKey(dto.getApiKey())) {
+            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.OK,
+                    messageService.getMessage("API_KEY_EXISTS"),
+                    messageService.getMessage("API_KEY_EXISTS"), null);
         }
 
-        if(smsProviderMasterRepository.existsByApiKey(dto.getApiKey())){
-            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.BAD_REQUEST, "Provider Api  key is already exists", "Provider Api key is already exists", null);
-
-        }
-        if(smsProviderMasterRepository.existsByUrl(dto.getUrl())){
-            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.BAD_REQUEST, "Provider url is already exists", "Provider url is already exists", null);
-
+        if (smsProviderMasterRepository.existsByUrl(dto.getUrl())) {
+            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.OK,
+                    messageService.getMessage("URL_EXISTS"),
+                    messageService.getMessage("URL_EXISTS"), null);
         }
 
     }

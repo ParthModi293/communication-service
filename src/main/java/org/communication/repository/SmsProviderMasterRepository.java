@@ -1,7 +1,4 @@
 package org.communication.repository;
-
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import org.communication.entity.SmsProviderMaster;
 import org.springframework.data.jpa.repository.JpaRepository;
 
