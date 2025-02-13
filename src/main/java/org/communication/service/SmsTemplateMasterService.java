@@ -7,9 +7,7 @@ import org.communication.common.Const;
 import org.communication.config.MessageService;
 import org.communication.dto.SmsTemplateMasterDto;
 import org.communication.dto.SmsTemplateMasterFilterRequest;
-import org.communication.dto.TemplateMastFilterRequest;
 import org.communication.entity.SmsTemplateMaster;
-import org.communication.entity.TemplateMast;
 import org.communication.repository.SmsTemplateMasterRepository;
 import org.communication.validator.SmsTemplateMasterValidator;
 import org.springframework.data.domain.Page;
@@ -18,8 +16,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -37,7 +36,7 @@ public class SmsTemplateMasterService {
     }
 
     @Transactional
-    public ResponseBean<SmsTemplateMaster> addOrUpdateSmsTemplate(SmsTemplateMasterDto smsTemplateMasterDto){
+    public ResponseBean<?> addOrUpdateSmsTemplate(SmsTemplateMasterDto smsTemplateMasterDto){
 
         smsTemplateMasterValidator.validateSmsTemplateRequest(smsTemplateMasterDto);
 
@@ -50,12 +49,13 @@ public class SmsTemplateMasterService {
         template.setSmsMasterId(smsTemplateMasterDto.getSmsMasterId());
         template.setVersion(generateVersion(smsTemplateMasterDto.getServiceProviderTemplateCode(), smsTemplateMasterDto.getVersionType()));
         template.setCreatedAt(Instant.now());
-//        template.setUpdatedAt(Instant.now());
         template.setCreatedBy("1");
-//        template.setUpdatedBy(smsTemplateMasterDto.getUpdatedBy());
-        smsTemplateMasterRepository.save(template);
-        return new ResponseBean<>(HttpStatus.OK, messageService.getMessage("SMS_TEMPLATE_ADD"),messageService.getMessage("SMS_TEMPLATE_ADD"),template);
+       smsTemplateMasterRepository.save(template);
 
+        Map<String,Object> res = new HashMap<>();
+        res.put("Id",template.getId());
+
+        return  new ResponseBean<>(HttpStatus.OK, org.common.common.Const.rCode.SUCCESS,messageService.getMessage("SMS_TEMPLATE_ADD"),messageService.getMessage("SMS_TEMPLATE_ADD"),res);
 
     }
 
@@ -70,19 +70,19 @@ public class SmsTemplateMasterService {
         int patch = Integer.parseInt(parts[2]);
 
         if ("MAJOR".equalsIgnoreCase(versionType)) {
-            major++;   // Increment the major version
-            minor = 0;  // Reset the minor version to 0
-            patch = 0;  // Reset the patch version to 0
+            major++;
+            minor = 0;
+            patch = 0;
         } else if ("MINOR".equalsIgnoreCase(versionType)) {
             if (patch == 9 && minor == 9) {
-                major++;   // Increment the major version if both patch and minor are 9
-                minor = 0; // Reset the minor version to 0
-                patch = 0; // Reset the patch version to 0
+                major++;
+                minor = 0;
+                patch = 0;
             } else if (patch == 9) {
-                minor++;   // Increment the minor version if only patch is 9
-                patch = 0; // Reset the patch version to 0
+                minor++;
+                patch = 0;
             } else {
-                patch++;   // Otherwise, just increment the patch version
+                patch++;
             }
         }
 
@@ -90,14 +90,28 @@ public class SmsTemplateMasterService {
     }
 
     public ResponseBean<?> getAllSmsTemplates(SmsTemplateMasterFilterRequest templateMastFilterRequest) {
-        Pageable pageable = PageRequest.of(templateMastFilterRequest.getPage() - 1, templateMastFilterRequest.getSize());
+        int page = Math.max(0, templateMastFilterRequest.getPage() - 1);
+        int size = Math.max(1, templateMastFilterRequest.getSize());
+        Pageable pageable = PageRequest.of(page, size);
         Page<SmsTemplateMaster> templateMasts;
         if (StringUtils.isNotBlank(templateMastFilterRequest.getSearchText()) && Pattern.matches(Const.PatternCheck.SearchText, templateMastFilterRequest.getSearchText())) {
             templateMasts = smsTemplateMasterRepository.findByTemplateNameAndBodyLike(templateMastFilterRequest.getSearchText(), pageable);
         }else{
             templateMasts = smsTemplateMasterRepository.findAll(pageable);
         }
-        return new ResponseBean<>(HttpStatus.OK, HttpStatus.OK.value(), messageService.getMessage("TEMPLATE_FETCH"), messageService.getMessage("TEMPLATE_FETCH"), templateMasts.getContent(), new Pagination((int) templateMasts.getTotalElements(), templateMastFilterRequest.getPage(), templateMastFilterRequest.getSize()));
+        return new ResponseBean<>(HttpStatus.OK, HttpStatus.OK.value(), messageService.getMessage("TEMPLATE_FETCH"), messageService.getMessage("TEMPLATE_FETCH"), templateMasts.getContent(), new Pagination((int) templateMasts.getTotalElements(), templateMastFilterRequest.getPage(), size));
+
+    }
+
+    public ResponseBean<?> findSmsTemplateById(Integer id) {
+
+        smsTemplateMasterValidator.validateSmsTemplateId(id);
+
+        Optional<SmsTemplateMaster> templateMaster = smsTemplateMasterRepository.findById(id);
+        if(templateMaster.isPresent()){
+            return new ResponseBean<>(HttpStatus.OK, org.common.common.Const.rCode.SUCCESS,messageService.getMessage("TEMPLATE_FETCH"),messageService.getMessage("TEMPLATE_FETCH"),templateMaster.get());
+        }
+        return new ResponseBean<>(HttpStatus.OK, org.common.common.Const.rCode.SUCCESS,messageService.getMessage("TEMPLATE_FETCH"),messageService.getMessage("TEMPLATE_FETCH"),null);
 
     }
 

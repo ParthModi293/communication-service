@@ -1,5 +1,6 @@
 package org.communication.service;
 
+import org.common.common.Const;
 import org.common.common.ResponseBean;
 import org.communication.config.MessageService;
 import org.communication.dto.SmsSenderMasterDto;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class SmsSenderMasterService {
@@ -26,7 +29,7 @@ public class SmsSenderMasterService {
     }
 
     @Transactional
-    public ResponseBean<SmsSenderMaster> createSenderMaster(SmsSenderMasterDto requestDTO) {
+    public ResponseBean<?> createSenderMaster(SmsSenderMasterDto requestDTO) {
 
         validator.validateSenderMasterRequest(requestDTO);
 
@@ -35,11 +38,12 @@ public class SmsSenderMasterService {
         senderMaster.setServiceProviderId(requestDTO.getServiceProviderId());
         senderMaster.setIsActive(requestDTO.getIsActive());
         senderMaster.setCreatedAt(Instant.now());
-//        senderMaster.setUpdatedAt(Instant.now());
         senderMaster.setCreatedBy("1");
-//        senderMaster.setUpdatedBy("1");
          senderMasterRepository.save(senderMaster);
-        return new ResponseBean<>(HttpStatus.OK, messageService.getMessage("SMS_SENDER_ADD"),messageService.getMessage("SMS_SENDER_ADD"),senderMaster);
+
+        Map<String,Object> res = new HashMap<>();
+        res.put("Id",senderMaster.getId());
+        return new ResponseBean<>(HttpStatus.OK, Const.rCode.SUCCESS, messageService.getMessage("SMS_SENDER_ADD"),messageService.getMessage("SMS_SENDER_ADD"),res);
 
     }
 

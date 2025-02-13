@@ -1,9 +1,11 @@
 package org.communication.dto;
 
 import jakarta.validation.constraints.Min;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class SmsTemplateMasterFilterRequest {
 
 
@@ -13,5 +15,5 @@ public class SmsTemplateMasterFilterRequest {
     private int page;
 
     @Min(value = 1, message = "Page Size minimum 1")
-    private int Size;
+    private int size;
 }

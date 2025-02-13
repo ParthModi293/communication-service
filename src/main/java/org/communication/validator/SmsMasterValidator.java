@@ -4,9 +4,7 @@ import org.common.common.Const;
 import org.common.exception.ValidationException;
 import org.communication.config.MessageService;
 import org.communication.dto.SmsMasterDto;
-import org.communication.entity.SmsMaster;
 import org.communication.repository.MailEventRepository;
-import org.communication.repository.SmsMasterRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -15,12 +13,11 @@ import org.springframework.util.StringUtils;
 @Service
 public class SmsMasterValidator {
 
-    private final SmsMasterRepository smsMasterRepository;
+
     private final MessageService messageService;
     private final MailEventRepository mailEventRepository;
 
-    public SmsMasterValidator(SmsMasterRepository smsMasterRepository, MessageService messageService, MailEventRepository mailEventRepository) {
-        this.smsMasterRepository = smsMasterRepository;
+    public SmsMasterValidator(MessageService messageService,MailEventRepository mailEventRepository) {
         this.messageService = messageService;
         this.mailEventRepository = mailEventRepository;
     }
@@ -56,11 +53,5 @@ public class SmsMasterValidator {
                     messageService.getMessage("EVENT_ID_NOT_AVAILABLE"),
                     messageService.getMessage("EVENT_ID_NOT_AVAILABLE"), null);
         }
-
-      /*  if(dto.getTemplateName() !=null && smsMasterRepository.existsByTemplateName((dto.getTemplateName()))){
-            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.BAD_REQUEST, "Template name already exists!", "Provider name already exists!", null);
-
-        }*/
-
     }
 }

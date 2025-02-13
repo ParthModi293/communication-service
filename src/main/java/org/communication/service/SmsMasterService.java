@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -29,7 +31,7 @@ public class SmsMasterService {
     }
 
     @Transactional
-    public ResponseBean<SmsMaster> createOrUpdateSmsMaster(SmsMasterDto requestDTO) {
+    public ResponseBean<?> createOrUpdateSmsMaster(SmsMasterDto requestDTO) {
 
         smsMasterValidator.validateSmsMaster(requestDTO);
         SmsMaster smsMaster;
@@ -59,7 +61,10 @@ public class SmsMasterService {
 
         smsMasterRepository.save(smsMaster);
 
-        return new ResponseBean<>(HttpStatus.OK, messageService.getMessage("SMS_MASTER_ADD"), messageService.getMessage("SMS_MASTER_ADD"), smsMaster);
+        Map<String,Object> res = new HashMap<>();
+        res.put("Id",smsMaster.getId());
+
+        return new ResponseBean<>(HttpStatus.OK,Const.rCode.SUCCESS, messageService.getMessage("SMS_MASTER_ADD"), messageService.getMessage("SMS_MASTER_ADD"),res);
 
 
     }

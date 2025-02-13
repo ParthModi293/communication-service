@@ -1,8 +1,6 @@
 package org.communication.repository;
 
-import jakarta.validation.constraints.Size;
 import org.communication.entity.SmsTemplateMaster;
-import org.communication.entity.TemplateMast;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,7 +14,7 @@ public interface SmsTemplateMasterRepository extends JpaRepository<SmsTemplateMa
 
     Optional<SmsTemplateMaster> findTopByServiceProviderTemplateCodeOrderByCreatedAtDesc( String serviceProviderTemplateCode);
 
-    @Query(value = "SELECT tm FROM SmsTemplateMaster tm JOIN SmsMaster sm ON tm.smsMasterId=sm.id WHERE (LOWER(sm.templateName) like lower(concat('%',:searchtext,'%') ) OR LOWER(tm.body) like lower(concat('%',:searchtext,'%') ))")
-    Page<SmsTemplateMaster> findByTemplateNameAndBodyLike(@Param("searchText") String searchText, Pageable pageable);
+        @Query(value = "SELECT tm FROM SmsTemplateMaster tm JOIN SmsMaster sm ON tm.smsMasterId=sm.id WHERE (LOWER(sm.templateName) like lower(concat('%',:searchText,'%') ) OR LOWER(tm.body) like lower(concat('%',:searchText,'%') ))")
+        Page<SmsTemplateMaster> findByTemplateNameAndBodyLike(@Param("searchText") String searchText, Pageable pageable);
 
 }

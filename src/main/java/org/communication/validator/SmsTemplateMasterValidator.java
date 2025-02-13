@@ -7,6 +7,7 @@ import org.communication.config.MessageService;
 import org.communication.dto.SmsTemplateMasterDto;
 import org.communication.repository.SmsMasterRepository;
 import org.communication.repository.SmsSenderMasterRepository;
+import org.communication.repository.SmsTemplateMasterRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -19,11 +20,13 @@ public class SmsTemplateMasterValidator {
     private final SmsSenderMasterRepository smsSenderMasterRepository;
     private final SmsMasterRepository smsMasterRepository;
     private final MessageService messageService;
+    private final SmsTemplateMasterRepository smsTemplateMasterRepository;
 
-    public SmsTemplateMasterValidator(SmsSenderMasterRepository smsSenderMasterRepository, SmsMasterRepository smsMasterRepository, MessageService messageService) {
+    public SmsTemplateMasterValidator(SmsSenderMasterRepository smsSenderMasterRepository, SmsMasterRepository smsMasterRepository, MessageService messageService, SmsTemplateMasterRepository smsTemplateMasterRepository) {
         this.smsSenderMasterRepository = smsSenderMasterRepository;
         this.smsMasterRepository = smsMasterRepository;
         this.messageService = messageService;
+        this.smsTemplateMasterRepository = smsTemplateMasterRepository;
     }
 
     public void validateSmsTemplateRequest(SmsTemplateMasterDto dto) {
@@ -75,5 +78,21 @@ public class SmsTemplateMasterValidator {
                     messageService.getMessage("VERSION_TYPE_REQUIRED"),
                     messageService.getMessage("VERSION_TYPE_REQUIRED"), null);
         }
+    }
+
+    public void validateSmsTemplateId(Integer smsTemplateMasterId) {
+
+        if(!smsTemplateMasterRepository.existsById(smsTemplateMasterId)) {
+            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.OK,
+                    messageService.getMessage("SMS_TEMPLATE_ID_NOT_AVAILABLE"),
+                    messageService.getMessage("SMS_TEMPLATE_ID_NOT_AVAILABLE"), null);
+        }
+
+        if(smsTemplateMasterId <= 0){
+            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.OK,
+                    messageService.getMessage("INVALID_SMS_TEMPLATE_ID"),
+                    messageService.getMessage("INVALID_SMS_TEMPLATE_ID"), null);
+        }
+
     }
 }

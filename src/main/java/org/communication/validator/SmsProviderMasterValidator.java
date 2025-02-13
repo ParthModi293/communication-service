@@ -58,18 +58,6 @@ public class SmsProviderMasterValidator {
                     messageService.getMessage("URL_MAX_LENGTH"), null);
         }
 
-        /*if (dto.getCreatedBy() != null && dto.getCreatedBy().length() > 255) {
-            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.OK,
-                    messageService.getMessage("CREATED_BY_MAX_LENGTH"),
-                    messageService.getMessage("CREATED_BY_MAX_LENGTH"), null);
-        }
-
-        if (dto.getUpdatedBy() != null && dto.getUpdatedBy().length() > 255) {
-            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.OK,
-                    messageService.getMessage("UPDATED_BY_MAX_LENGTH"),
-                    messageService.getMessage("UPDATED_BY_MAX_LENGTH"), null);
-        }*/
-
         if (smsProviderMasterRepository.existsByName(dto.getName())) {
             throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.OK,
                     messageService.getMessage("PROVIDER_NAME_EXISTS"),

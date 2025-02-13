@@ -1,5 +1,6 @@
 package org.communication.service;
 
+import org.common.common.Const;
 import org.common.common.ResponseBean;
 import org.communication.config.MessageService;
 import org.communication.dto.SmsProviderMasterDto;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class SmsProviderMasterService {
@@ -28,19 +31,20 @@ public class SmsProviderMasterService {
 
 
     @Transactional
-    public ResponseBean<SmsProviderMaster> createSmsProvider(SmsProviderMasterDto smsProviderMasterDto) {
+    public ResponseBean<?> createSmsProvider(SmsProviderMasterDto smsProviderMasterDto) {
         smsProviderMasterValidator.validateSmsProviderRequest(smsProviderMasterDto);
         SmsProviderMaster provider = new SmsProviderMaster();
         provider.setName(smsProviderMasterDto.getName());
         provider.setApiKey(smsProviderMasterDto.getApiKey());
         provider.setUrl(smsProviderMasterDto.getUrl());
         provider.setCreatedAt(Instant.now());
-//        provider.setUpdatedAt(Instant.now());
         provider.setCreatedBy("1");
-//        provider.setUpdatedBy(smsProviderMasterDto.getUpdatedBy());
-         smsProviderMasterRepository.save(provider);
+        smsProviderMasterRepository.save(provider);
 
-        return new ResponseBean<>(HttpStatus.OK, messageService.getMessage("SMS_PROVIDER_ADD"),messageService.getMessage("SMS_PROVIDER_ADD"),provider);
+        Map<String,Object> res = new HashMap<>();
+        res.put("Id",provider.getId());
+
+        return new ResponseBean<>(HttpStatus.OK, Const.rCode.SUCCESS, messageService.getMessage("SMS_PROVIDER_ADD"),messageService.getMessage("SMS_PROVIDER_ADD"),res);
 
     }
 }

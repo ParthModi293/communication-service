@@ -25,9 +25,4 @@ public class SmsProviderMasterDto {
     @Pattern(regexp = Const.PatternCheck.URL, message = "Enter Valid url")
     private String url;
 
-   /* @Size(max = 255, message = "Created by must be at most 255 characters")
-    private String createdBy;
-
-    @Size(max = 255, message = "Updated by must be at most 255 characters")
-    private String updatedBy;*/
 }

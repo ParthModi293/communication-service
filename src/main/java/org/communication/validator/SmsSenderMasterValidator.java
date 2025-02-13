@@ -1,11 +1,11 @@
 package org.communication.validator;
 
 import org.common.common.Const;
-import org.common.common.Enum;
 import org.common.exception.ValidationException;
 import org.communication.config.MessageService;
 import org.communication.dto.SmsSenderMasterDto;
 import org.communication.repository.SmsProviderMasterRepository;
+import org.communication.repository.SmsSenderMasterRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -16,10 +16,12 @@ public class SmsSenderMasterValidator {
 
     private final SmsProviderMasterRepository smsProviderMasterRepository;
     private final MessageService messageService;
+    private final SmsSenderMasterRepository smsSenderMasterRepository;
 
-    public SmsSenderMasterValidator(SmsProviderMasterRepository smsProviderMasterRepository, MessageService messageService) {
+    public SmsSenderMasterValidator(SmsProviderMasterRepository smsProviderMasterRepository, MessageService messageService, SmsSenderMasterRepository smsSenderMasterRepository) {
         this.smsProviderMasterRepository = smsProviderMasterRepository;
         this.messageService = messageService;
+        this.smsSenderMasterRepository = smsSenderMasterRepository;
     }
 
     public void validateSenderMasterRequest(SmsSenderMasterDto dto) {
@@ -36,6 +38,12 @@ public class SmsSenderMasterValidator {
                     messageService.getMessage("SENDER_CODE_MAX_LENGTH"), null);
         }
 
+        if(smsSenderMasterRepository.existsBySenderCode(dto.getSenderCode())){
+            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.OK,
+                    messageService.getMessage("SENDER_CODE_EXISTS"),
+                    messageService.getMessage("SENDER_CODE_EXISTS"), null);
+        }
+
         if (dto.getServiceProviderId() == null || dto.getServiceProviderId() <=0  || !smsProviderMasterRepository.existsById(dto.getServiceProviderId())) {
             throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.OK,
                     messageService.getMessage("INVALID_SERVICE_PROVIDER_ID"),
@@ -48,16 +56,5 @@ public class SmsSenderMasterValidator {
                     messageService.getMessage("ACTIVE_STATUS_REQUIRED"), null);
         }
 
-        /*if (dto.getCreatedBy() != null && dto.getCreatedBy().length() > 255) {
-            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.BAD_REQUEST,
-                    messageService.getMessage("CREATED_BY_MAX_LENGTH"),
-                    messageService.getMessage("CREATED_BY_MAX_LENGTH"), null);
-        }
-
-        if (dto.getUpdatedBy() != null && dto.getUpdatedBy().length() > 255) {
-            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.BAD_REQUEST,
-                    messageService.getMessage("UPDATED_BY_MAX_LENGTH"),
-                    messageService.getMessage("UPDATED_BY_MAX_LENGTH"), null);
-        }*/
     }
 }
