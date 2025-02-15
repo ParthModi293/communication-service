@@ -1,10 +1,15 @@
 package org.communication.service;
 
+import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 
 
+import org.common.common.Const;
+import org.common.common.LogUtil;
+import org.common.exception.FileNotFoundException;
 import org.communication.common.Enum;
 
+import org.communication.config.MessageService;
 import org.communication.dto.DynamicMailSender;
 import org.communication.dto.EmailDto;
 import org.communication.dto.EmailPropertiesDto;
@@ -12,12 +17,13 @@ import org.communication.entity.EmailHistory;
 import org.communication.repository.EmailHistoryRepository;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -29,21 +35,24 @@ public class EmailSenderService {
 
     private final DynamicMailSender dynamicMailSender;
     private final EmailHistoryRepository emailHistoryRepository;
+    private final MessageService messageService;
 
-    public EmailSenderService(DynamicMailSender dynamicMailSender, EmailHistoryRepository emailHistoryRepository) {
+
+    public EmailSenderService(DynamicMailSender dynamicMailSender, EmailHistoryRepository emailHistoryRepository, MessageService messageService) {
         this.dynamicMailSender = dynamicMailSender;
         this.emailHistoryRepository = emailHistoryRepository;
+        this.messageService = messageService;
     }
 
     /**
-     * Sends an email using dynamically created JavaMailSender based on the provided email properties.
-     * method take emailDto request and set value to EmailHistory For record . After
-     *
-     * @param emailDto The {@code EmailDto} object containing email details such as recipients,
-     *                 subject, body,cc,bcc,attachments,version.
-     *                 The email history is recorded in the database with status updates.
+     *   * @apiNote Sends an email using a dynamically created {@link JavaMailSender} based on the provided email properties.
+     * @param emailDto The {@link EmailDto}
+     * @throws FileNotFoundException If any provided attachment file does not exist or is unreadable.
+     * @throws Exception             If there is any failure in sending the email.
+     * The method records the email details in {@link EmailHistory}
+     * @author [Parth]
      */
-    public void sendEmail(EmailDto emailDto) {
+    public void sendEmail(EmailDto emailDto) throws MessagingException, IOException {
         EmailPropertiesDto emailProperties = EmailPropertiesDto.builder()
                 .username(emailDto.getFrom())
                 .password(emailDto.getPassword())
@@ -84,8 +93,9 @@ public class EmailSenderService {
                 for (String filePath : attachmentPaths) {
                     File file = new File(filePath);
                     if (!file.exists() || !file.canRead()) {
-                        System.out.println("File not found:================ " + filePath);
-                        throw new FileNotFoundException("Attachment not found or unreadable: " + filePath);
+                        emailHistory.setStatus(String.valueOf(Enum.STATUS.FAILED));
+                        emailHistory.setErrorMessage("File not found: " + filePath);
+                        throw new FileNotFoundException(Const.rCode.BAD_REQUEST, HttpStatus.OK, messageService.getMessage("FILE_NOT_FOUND"), messageService.getMessage("FILE_NOT_FOUND"), null);
 
                     }
                     String fileName = file.getName();
@@ -102,14 +112,13 @@ public class EmailSenderService {
             }
             mailSender.send(message);
             emailHistory.setStatus(String.valueOf(Enum.STATUS.SUCCESS));
-        } catch (FileNotFoundException e) {
-            emailHistory.setStatus(String.valueOf(Enum.STATUS.FAILED));
-            emailHistory.setErrorMessage("Attachment error: " + e.getMessage());
         } catch (Exception e) {
             emailHistory.setStatus(String.valueOf(Enum.STATUS.FAILED));
             emailHistory.setErrorMessage(e.getMessage());
+            LogUtil.printErrorStackTraceLog(e);
+            throw e;
         } finally {
-            this.emailHistoryRepository.save(emailHistory);
+            emailHistoryRepository.save(emailHistory);
         }
 
     }

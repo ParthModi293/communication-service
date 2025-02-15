@@ -32,12 +32,6 @@ public class SmsSenderMasterValidator {
                     messageService.getMessage("SENDER_CODE_REQUIRED"), null);
         }
 
-        if(dto.getSenderCode().length() > 45){
-            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.OK,
-                    messageService.getMessage("SENDER_CODE_MAX_LENGTH"),
-                    messageService.getMessage("SENDER_CODE_MAX_LENGTH"), null);
-        }
-
         if(smsSenderMasterRepository.existsBySenderCode(dto.getSenderCode())){
             throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.OK,
                     messageService.getMessage("SENDER_CODE_EXISTS"),

@@ -30,8 +30,17 @@ public class SmsMasterService {
         this.messageService = messageService;
     }
 
+    /**
+     * @apiNote  Creates or updates an SMS Master record.
+     * If `id` is provided, it updates the existing record; otherwise, a new record is created.
+     * Ensures `templateName` is unique before saving.
+     * @param requestDTO {@link SmsMasterDto}
+     * @return {@link ResponseBean} with the saved record ID.
+     * @throws ValidationException If `id` is not found when updating or `templateName` already exists.
+     * @author [Parth]
+     */
     @Transactional
-    public ResponseBean<?> createOrUpdateSmsMaster(SmsMasterDto requestDTO) {
+    public ResponseBean<Map<String,Object>>    createOrUpdateSmsMaster(SmsMasterDto requestDTO) {
 
         smsMasterValidator.validateSmsMaster(requestDTO);
         SmsMaster smsMaster;
