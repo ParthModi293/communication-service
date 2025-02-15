@@ -28,8 +28,16 @@ public class SmsSenderMasterService {
         this.messageService = messageService;
     }
 
+    /**
+     * @apiNote Creates a new SMS Sender Master record.
+     * Validates the request and saves sender details such as sender code, service provider ID, and status.
+     *
+     * @param requestDTO {@link SmsSenderMasterDto}
+     * @return {@link ResponseBean} containing the saved sender ID.
+     * @author Parth
+     */
     @Transactional
-    public ResponseBean<?> createSenderMaster(SmsSenderMasterDto requestDTO) {
+    public ResponseBean<Map<String,Object>> createSenderMaster(SmsSenderMasterDto requestDTO) {
 
         validator.validateSenderMasterRequest(requestDTO);
 

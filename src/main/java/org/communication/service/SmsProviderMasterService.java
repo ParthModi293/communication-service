@@ -29,9 +29,15 @@ public class SmsProviderMasterService {
         this.messageService = messageService;
     }
 
-
+    /**
+     * @apiNote Creates a new SMS Provider record.
+     * Validates the request before saving the provider details.
+     * @param smsProviderMasterDto {@link SmsProviderMasterDto}
+     * @return {@link ResponseBean} containing the saved provider ID.
+     * @author Parth
+     */
     @Transactional
-    public ResponseBean<?> createSmsProvider(SmsProviderMasterDto smsProviderMasterDto) {
+    public ResponseBean<Map<String,Object>> createSmsProvider(SmsProviderMasterDto smsProviderMasterDto) {
         smsProviderMasterValidator.validateSmsProviderRequest(smsProviderMasterDto);
         SmsProviderMaster provider = new SmsProviderMaster();
         provider.setName(smsProviderMasterDto.getName());
