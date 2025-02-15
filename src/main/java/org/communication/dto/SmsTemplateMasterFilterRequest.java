@@ -8,7 +8,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class SmsTemplateMasterFilterRequest {
 
-
     private String searchText;
 
     @Min(value = 1, message = "Page number minimum 1")

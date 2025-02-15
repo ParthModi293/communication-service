@@ -1,13 +1,13 @@
 package org.communication.dto;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.communication.common.Enum;
 import org.hibernate.validator.constraints.Length;
 
-@Getter
-@Setter
+@Data
 public class SmsTemplateMasterDto {
     @NotNull(message = "Body is required")
     @Length(max = 1028, message = "Body must be at most 1028 characters")
@@ -36,9 +36,4 @@ public class SmsTemplateMasterDto {
     @Enum(enumClass = org.common.common.Enum.MINOR_MAJOR.class, message = "Enter valid version type")
     private String versionType;
 
- /*   @Size(max = 255, message = "Created by must be at most 255 characters")
-    private String createdBy;
-
-    @Size(max = 255, message = "Updated by must be at most 255 characters")
-    private String updatedBy;*/
 }

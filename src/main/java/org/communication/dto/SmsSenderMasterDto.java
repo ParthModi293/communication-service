@@ -1,13 +1,13 @@
 package org.communication.dto;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 import org.common.common.Enum;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
-@Getter
-@Setter
+@Data
 public class SmsSenderMasterDto {
 
     @NotNull(message = "Sender code is required")
@@ -20,10 +20,4 @@ public class SmsSenderMasterDto {
     @NotNull(message = "Active status is required")
     @Enum(enumClass = org.common.common.Enum.Y_N.class, message = "Enter valid status")
     private String isActive;
-
-   /* @Size(max = 255, message = "Created by must be at most 255 characters")
-    private String createdBy;
-
-    @Size(max = 255, message = "Updated by must be at most 255 characters")
-    private String updatedBy;*/
 }

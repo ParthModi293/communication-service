@@ -2,14 +2,12 @@ package org.communication.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.communication.common.Const;
 import org.communication.common.Enum;
 import org.hibernate.validator.constraints.Length;
 
-@Getter
-@Setter
+@Data
 public class SmsMasterDto {
 
     private Integer id;
@@ -25,9 +23,5 @@ public class SmsMasterDto {
     @NotNull(message = "Priority is required")
     private Enum.PRIORITY priority;
 
-   /* @Size(max = 255, message = "Created by must be at most 255 characters")
-    private String createdBy;
 
-    @Size(max = 255, message = "Updated by must be at most 255 characters")
-    private String updatedBy;*/
 }
