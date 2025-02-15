@@ -33,14 +33,19 @@ public class TemplateMastService {
         this.messageService = messageService;
     }
 
+    /**
+     * @apiNote  Creates or updates a template based on the provided TemplateMastDto.
+     * If the DTO contains an existing template ID, the method attempts to retrieve
+     * and update the existing template. Otherwise, a new template is created.
+     *
+     * @param templateMastDto
+     * @return A ResponseBean containing the saved TemplateMast entity along with an HTTP status and success message.
+     * @author [Darshit]
+     */
     public ResponseBean<TemplateMast> createTemplate(TemplateMastDto templateMastDto) {
-
         templateMastValidator.validateTemplateMast(templateMastDto);
-
         TemplateMast template = new TemplateMast();
-
         if (templateMastDto.getId() != null && templateMastDto.getId() > 0) {
-
             Optional<TemplateMast> optionalTemplateMast = templateMastRepository.findById(templateMastDto.getId());
             if (optionalTemplateMast.isPresent()) {
                 template = optionalTemplateMast.get();
@@ -73,6 +78,16 @@ public class TemplateMastService {
 
     }
 
+    /**
+     * @apiNote Retrieves a paginated list of templates based on the provided filter criteria.
+     * If a search text is provided and matches the required pattern, the method filters
+     * templates by event ID and template name. Otherwise, it fetches all templates by event ID.
+     *
+     * @param templateMastFilterRequest
+     * @return A ResponseBean containing a list of TemplateMast entities along with an HTTP status,
+     *         success message, and pagination details.
+     * @author [Darshit]
+     */
     public ResponseBean<?> getAllTemplates(TemplateMastFilterRequest templateMastFilterRequest) {
 
         Pageable pageable = PageRequest.of(templateMastFilterRequest.getPage() - 1, templateMastFilterRequest.getSize());
@@ -86,13 +101,20 @@ public class TemplateMastService {
         return new ResponseBean<>(HttpStatus.OK, HttpStatus.OK.value(), messageService.getMessage("TEMPLATE_FETCH"), messageService.getMessage("TEMPLATE_FETCH"), templateMasts.getContent(), new Pagination((int) templateMasts.getTotalElements(), templateMastFilterRequest.getPage(), templateMastFilterRequest.getSize()));
     }
 
+    /**
+     * @apiNote Retrieves a template by its unique ID.
+     * If the template exists, it returns the template details; otherwise, it returns a response with a null value.
+     *
+     * @param id
+     * @return A ResponseBean containing the TemplateMast entity if found, otherwise a response with null.
+     * @author [Darshit]
+     */
     public ResponseBean<?> getTemplateById(int id) {
         Optional<TemplateMast> templateMast = templateMastRepository.findById(id);
         if (templateMast.isPresent()) {
             return new ResponseBean<>(HttpStatus.OK, messageService.getMessage("TEMPLATE_FETCH"), messageService.getMessage("TEMPLATE_FETCH"), templateMast.get());
         }
-        return new ResponseBean<>(HttpStatus.OK, messageService.getMessage("TEMPLATE_FETCH"), messageService.getMessage("TEMPLATE_FETCH"), null);
-
+        return new ResponseBean<>(HttpStatus.OK, messageService.getMessage("TEMPLATE_NOT_AVAILABLE"), messageService.getMessage("TEMPLATE_NOT_AVAILABLE"), null);
     }
 
     public void deleteTemplate(int id) {

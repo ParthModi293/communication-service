@@ -24,6 +24,15 @@ public class TemplateDetailsService {
         this.messageService = messageService;
     }
 
+    /**
+     * @apiNote Creates and saves a new TemplateDetail entity based on the provided TemplateDetailsDto.
+     * If a template with the same templateMastId already exists, the new template's version is incremented accordingly.
+     *
+     * @param templateDetailsDto
+     * @return A ResponseBean containing the created TemplateDetail entity along with an HTTP status
+     *         and success messages.
+     * @author [Darshit]
+     */
     public ResponseBean<TemplateDetail> createTemplateDetail(TemplateDetailsDto templateDetailsDto) {
         templateDetailsValidator.validateTemplateDetails(templateDetailsDto);
         double result = 0.0;
@@ -43,6 +52,14 @@ public class TemplateDetailsService {
         return templateDetailRepository.save(templateDetails);
     }
 
+    /**
+     * @apiNote  Retrieves the template details associated with the given template master ID.
+     *
+     * @param templateMastId
+     * @return A ResponseBean containing the retrieved TemplateDetail entity along with
+     *         an HTTP status and success message.
+     * @author [Darshit]
+     */
     public ResponseBean<?> getTemplateDetail(int templateMastId) {
         TemplateDetail templateDetailsByTemplateMastId = getTemplateDetailsByTemplateMastId(templateMastId);
         return new ResponseBean<>(HttpStatus.OK, messageService.getMessage("TEMPLATE_DETAILS_FETCH"), messageService.getMessage("TEMPLATE_DETAILS_FETCH"), templateDetailsByTemplateMastId);
@@ -53,6 +70,14 @@ public class TemplateDetailsService {
         return templateDetailRepository.findFirstByTemplateMastIdOrderByCreatedAtDesc(templateMastId);
     }
 
+    /**
+     * @apiNote Retrieves all template details associated with the given template master ID.
+     *
+     * @param templateMastId
+     * @return A ResponseBean containing a list of TemplateDetail entities along with
+     *         an HTTP status and success message.
+     * @author [Darshit]
+     */
     public ResponseBean<?> getAllTemplateDetail(int templateMastId) {
         List<TemplateDetail> templateDetailsByTemplateMastId = getAllTemplateDetailsByTemplateMastId(templateMastId);
         return new ResponseBean<>(HttpStatus.OK, messageService.getMessage("TEMPLATE_DETAILS_FETCH"), messageService.getMessage("TEMPLATE_DETAILS_FETCH"), templateDetailsByTemplateMastId);
