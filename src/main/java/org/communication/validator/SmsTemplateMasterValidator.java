@@ -1,7 +1,6 @@
 package org.communication.validator;
 
 import org.common.common.Const;
-import org.common.common.Enum;
 import org.common.exception.ValidationException;
 import org.communication.config.MessageService;
 import org.communication.dto.SmsTemplateMasterDto;
@@ -77,6 +76,11 @@ public class SmsTemplateMasterValidator {
             throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.OK,
                     messageService.getMessage("VERSION_TYPE_REQUIRED"),
                     messageService.getMessage("VERSION_TYPE_REQUIRED"), null);
+        }
+        if (!StringUtils.hasText(dto.getServiceProviderTemplateCode())) {
+            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.OK,
+                    messageService.getMessage("SERVICE_PROVIDER_TEMPLATE_CODE_REQUIRED"),
+                    messageService.getMessage("SERVICE_PROVIDER_TEMPLATE_CODE_REQUIRED"), null);
         }
     }
 

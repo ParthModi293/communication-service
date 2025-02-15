@@ -1,7 +1,6 @@
 package org.communication.dto;
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.communication.common.Enum;
@@ -19,6 +18,7 @@ public class SmsTemplateMasterDto {
     private String govTemplateCode;
 
     @Length(max = 45, message = "Service provider template code must be at most 45 characters")
+    @NotNull(message = "Service provider template code is required")
     private String serviceProviderTemplateCode;
 
     @NotNull(message = "Sender ID is required")
