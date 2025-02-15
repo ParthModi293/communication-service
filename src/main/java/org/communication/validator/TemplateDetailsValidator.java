@@ -6,8 +6,16 @@ import org.communication.config.MessageService;
 import org.communication.dto.TemplateDetailsDto;
 import org.communication.repository.TemplateDetailRepository;
 import org.communication.repository.TemplateMastRepository;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
 
 
 @Service
@@ -28,12 +36,23 @@ public class TemplateDetailsValidator {
         if (!templateMastRepository.existsById(templateDetailsDto.getTemplateMastId())) {
             throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.OK, messageService.getMessage("EVENT_TEMPLATE_NOT_AVAILABLE"), messageService.getMessage("EVENT_TEMPLATE_NOT_AVAILABLE"), null);
         }
-//        Document doc = Jsoup.parse(URLDecoder.decode(tncBean.getTncText(), StandardCharsets.UTF_8.toString()));
-//        System.out.println("before:" + doc);
-//        if ((!doc.select("script").isEmpty())) {
-//            return new ResponseBean<>(HttpStatus.BAD_REQUEST, "Enter valid text for terms & conditions",
-//                    "Data of Terms and Conditions text contains malicious elements.", null);
-//        }
+        validateHtml(templateDetailsDto.getBody());
+    }
+
+    public void validateHtml(String templateDetailsDto) {
+        try {
+            Document doc = Jsoup.parse(URLDecoder.decode(templateDetailsDto, StandardCharsets.UTF_8.toString()));
+
+            List<String> MALICIOUS_TAGS = Arrays.asList("script", "iframe", "object", "embed", "applet", "form", "link", "meta", "style", "base");
+
+            for (String tag : MALICIOUS_TAGS) {
+                if ((!doc.select(tag).isEmpty())) {
+                    throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.OK, messageService.getMessage("TEMPLATE_DETAIL_BODY"), messageService.getMessage("TEMPLATE_DETAIL_BODY"), null);
+                }
+            }
+        } catch (UnsupportedEncodingException e) {
+            throw new ValidationException(Const.rCode.BAD_REQUEST, HttpStatus.OK, messageService.getMessage("TEMPLATE_DETAIL_BODY"), messageService.getMessage("TEMPLATE_DETAIL_BODY"), null);
+        }
     }
 
     public void validateTemplateMastId(int templateMastId) {
