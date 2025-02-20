@@ -1,6 +1,6 @@
 package com.clapcle.communication.validator;
 
-import com.clapcle.communication.config.MessageService;
+import com.clapcle.communication.config.LocaleService;
 import com.clapcle.communication.dto.SmsTemplateMasterDto;
 import com.clapcle.communication.repository.SmsMasterRepository;
 import com.clapcle.communication.repository.SmsSenderMasterRepository;
@@ -18,69 +18,69 @@ public class SmsTemplateMasterValidator {
 
     private final SmsSenderMasterRepository smsSenderMasterRepository;
     private final SmsMasterRepository smsMasterRepository;
-    private final MessageService messageService;
+    private final LocaleService localeService;
     private final SmsTemplateMasterRepository smsTemplateMasterRepository;
 
-    public SmsTemplateMasterValidator(SmsSenderMasterRepository smsSenderMasterRepository, SmsMasterRepository smsMasterRepository, MessageService messageService, SmsTemplateMasterRepository smsTemplateMasterRepository) {
+    public SmsTemplateMasterValidator(SmsSenderMasterRepository smsSenderMasterRepository, SmsMasterRepository smsMasterRepository, LocaleService localeService, SmsTemplateMasterRepository smsTemplateMasterRepository) {
         this.smsSenderMasterRepository = smsSenderMasterRepository;
         this.smsMasterRepository = smsMasterRepository;
-        this.messageService = messageService;
+        this.localeService = localeService;
         this.smsTemplateMasterRepository = smsTemplateMasterRepository;
     }
 
     public void validateSmsTemplateRequest(SmsTemplateMasterDto dto) {
         if (!StringUtils.hasText(dto.getBody())) {
             throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK,
-                    messageService.getMessage("BODY_REQUIRED"),
-                    messageService.getMessage("BODY_REQUIRED"), null);
+                    localeService.getMessage("BODY_REQUIRED"),
+                    localeService.getMessage("BODY_REQUIRED"), null);
         }
 
         if (!StringUtils.hasText(dto.getGovTemplateCode())) {
             throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK,
-                    messageService.getMessage("GOV_TEMPLATE_CODE_REQUIRED"),
-                    messageService.getMessage("GOV_TEMPLATE_CODE_REQUIRED"), null);
+                    localeService.getMessage("GOV_TEMPLATE_CODE_REQUIRED"),
+                    localeService.getMessage("GOV_TEMPLATE_CODE_REQUIRED"), null);
         }
 
         if (!StringUtils.hasText(dto.getIsActive())) {
             throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK,
-                    messageService.getMessage("STATUS_REQUIRED"),
-                    messageService.getMessage("STATUS_REQUIRED"), null);
+                    localeService.getMessage("STATUS_REQUIRED"),
+                    localeService.getMessage("STATUS_REQUIRED"), null);
         }
 
 
         if (dto.getSenderId() != null && !smsSenderMasterRepository.existsById(dto.getSenderId())) {
             throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK,
-                    messageService.getMessage("SENDER_ID_NOT_AVAILABLE"),
-                    messageService.getMessage("SENDER_ID_NOT_AVAILABLE"), null);
+                    localeService.getMessage("SENDER_ID_NOT_AVAILABLE"),
+                    localeService.getMessage("SENDER_ID_NOT_AVAILABLE"), null);
         }
 
         if (dto.getSmsMasterId() != null && !smsMasterRepository.existsById(dto.getSmsMasterId())) {
             throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK,
-                    messageService.getMessage("SMS_ID_NOT_AVAILABLE"),
-                    messageService.getMessage("SMS_ID_NOT_AVAILABLE"), null);
+                    localeService.getMessage("SMS_ID_NOT_AVAILABLE"),
+                    localeService.getMessage("SMS_ID_NOT_AVAILABLE"), null);
         }
 
         if (dto.getSenderId() == null || dto.getSenderId() <= 0 || ObjectUtils.isEmpty(dto.getSenderId())) {
             throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK,
-                    messageService.getMessage("SENDER_ID_REQUIRED"),
-                    messageService.getMessage("SENDER_ID_REQUIRED"), null);
+                    localeService.getMessage("SENDER_ID_REQUIRED"),
+                    localeService.getMessage("SENDER_ID_REQUIRED"), null);
         }
 
         if (dto.getSmsMasterId() == null || dto.getSmsMasterId() <= 0 || ObjectUtils.isEmpty(dto.getSmsMasterId())) {
             throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK,
-                    messageService.getMessage("SMS_MASTER_ID_REQUIRED"),
-                    messageService.getMessage("SMS_MASTER_ID_REQUIRED"), null);
+                    localeService.getMessage("SMS_MASTER_ID_REQUIRED"),
+                    localeService.getMessage("SMS_MASTER_ID_REQUIRED"), null);
         }
 
         if (!StringUtils.hasText(dto.getVersionType())) {
             throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK,
-                    messageService.getMessage("VERSION_TYPE_REQUIRED"),
-                    messageService.getMessage("VERSION_TYPE_REQUIRED"), null);
+                    localeService.getMessage("VERSION_TYPE_REQUIRED"),
+                    localeService.getMessage("VERSION_TYPE_REQUIRED"), null);
         }
         if (!StringUtils.hasText(dto.getServiceProviderTemplateCode())) {
             throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK,
-                    messageService.getMessage("SERVICE_PROVIDER_TEMPLATE_CODE_REQUIRED"),
-                    messageService.getMessage("SERVICE_PROVIDER_TEMPLATE_CODE_REQUIRED"), null);
+                    localeService.getMessage("SERVICE_PROVIDER_TEMPLATE_CODE_REQUIRED"),
+                    localeService.getMessage("SERVICE_PROVIDER_TEMPLATE_CODE_REQUIRED"), null);
         }
     }
 
@@ -88,14 +88,14 @@ public class SmsTemplateMasterValidator {
 
         if (!smsTemplateMasterRepository.existsById(smsTemplateMasterId)) {
             throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK,
-                    messageService.getMessage("SMS_TEMPLATE_ID_NOT_AVAILABLE"),
-                    messageService.getMessage("SMS_TEMPLATE_ID_NOT_AVAILABLE"), null);
+                    localeService.getMessage("SMS_TEMPLATE_ID_NOT_AVAILABLE"),
+                    localeService.getMessage("SMS_TEMPLATE_ID_NOT_AVAILABLE"), null);
         }
 
         if (smsTemplateMasterId <= 0) {
             throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK,
-                    messageService.getMessage("INVALID_SMS_TEMPLATE_ID"),
-                    messageService.getMessage("INVALID_SMS_TEMPLATE_ID"), null);
+                    localeService.getMessage("INVALID_SMS_TEMPLATE_ID"),
+                    localeService.getMessage("INVALID_SMS_TEMPLATE_ID"), null);
         }
 
     }

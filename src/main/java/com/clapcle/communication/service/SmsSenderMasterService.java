@@ -1,6 +1,6 @@
 package com.clapcle.communication.service;
 
-import com.clapcle.communication.config.MessageService;
+import com.clapcle.communication.config.LocaleService;
 import com.clapcle.communication.dto.SmsSenderMasterDto;
 import com.clapcle.communication.entity.SmsSenderMaster;
 import com.clapcle.communication.repository.SmsSenderMasterRepository;
@@ -20,12 +20,12 @@ public class SmsSenderMasterService {
 
     private final SmsSenderMasterValidator validator;
     private final SmsSenderMasterRepository senderMasterRepository;
-    private final MessageService messageService;
+    private final LocaleService localeService;
 
-    public SmsSenderMasterService(SmsSenderMasterValidator validator, SmsSenderMasterRepository senderMasterRepository, MessageService messageService) {
+    public SmsSenderMasterService(SmsSenderMasterValidator validator, SmsSenderMasterRepository senderMasterRepository, LocaleService localeService) {
         this.validator = validator;
         this.senderMasterRepository = senderMasterRepository;
-        this.messageService = messageService;
+        this.localeService = localeService;
     }
 
     /**
@@ -50,7 +50,7 @@ public class SmsSenderMasterService {
 
         Map<String, Object> res = new HashMap<>();
         res.put("Id", senderMaster.getId());
-        return new ResponseBean<>(HttpStatus.OK, ConstCore.rCode.SUCCESS, messageService.getMessage("SMS_SENDER_ADD"), messageService.getMessage("SMS_SENDER_ADD"), res);
+        return new ResponseBean<>(HttpStatus.OK, ConstCore.rCode.SUCCESS, localeService.getMessage("SMS_SENDER_ADD"), localeService.getMessage("SMS_SENDER_ADD"), res);
 
     }
 

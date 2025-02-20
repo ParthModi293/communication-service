@@ -1,6 +1,6 @@
 package com.clapcle.communication.service;
 
-import com.clapcle.communication.config.MessageService;
+import com.clapcle.communication.config.LocaleService;
 import com.clapcle.communication.dto.SmsMasterDto;
 import com.clapcle.communication.entity.SmsMaster;
 import com.clapcle.communication.repository.SmsMasterRepository;
@@ -22,12 +22,12 @@ public class SmsMasterService {
 
     private final SmsMasterValidator smsMasterValidator;
     private final SmsMasterRepository smsMasterRepository;
-    private final MessageService messageService;
+    private final LocaleService localeService;
 
-    public SmsMasterService(SmsMasterValidator smsMasterValidator, SmsMasterRepository smsMasterRepository, MessageService messageService) {
+    public SmsMasterService(SmsMasterValidator smsMasterValidator, SmsMasterRepository smsMasterRepository, LocaleService localeService) {
         this.smsMasterValidator = smsMasterValidator;
         this.smsMasterRepository = smsMasterRepository;
-        this.messageService = messageService;
+        this.localeService = localeService;
     }
 
     /**
@@ -47,7 +47,7 @@ public class SmsMasterService {
         if (requestDTO.getId() != null && requestDTO.getId() > 0) {
             Optional<SmsMaster> optionalSmsMaster = smsMasterRepository.findById(requestDTO.getId());
             if (optionalSmsMaster.isEmpty()) {
-                throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK, messageService.getMessage("SMS_MASTER_ID_NOT_AVAILABLE"), messageService.getMessage("SMS_MASTER_ID_NOT_AVAILABLE"), null);
+                throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK, localeService.getMessage("SMS_MASTER_ID_NOT_AVAILABLE"), localeService.getMessage("SMS_MASTER_ID_NOT_AVAILABLE"), null);
 
             }
             smsMaster = optionalSmsMaster.get();
@@ -61,7 +61,7 @@ public class SmsMasterService {
 
         Optional<SmsMaster> existingTemplate = smsMasterRepository.findByTemplateName((requestDTO.getTemplateName()));
         if (existingTemplate.isPresent() && !existingTemplate.get().getId().equals(requestDTO.getId())) {
-            throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK, messageService.getMessage("TEMPLATE_NAME_EXISTS"), messageService.getMessage("TEMPLATE_NAME_EXISTS"), null);
+            throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK, localeService.getMessage("TEMPLATE_NAME_EXISTS"), localeService.getMessage("TEMPLATE_NAME_EXISTS"), null);
         }
 
         smsMaster.setTemplateName(requestDTO.getTemplateName());
@@ -73,7 +73,7 @@ public class SmsMasterService {
         Map<String, Object> res = new HashMap<>();
         res.put("Id", smsMaster.getId());
 
-        return new ResponseBean<>(HttpStatus.OK, ConstCore.rCode.SUCCESS, messageService.getMessage("SMS_MASTER_ADD"), messageService.getMessage("SMS_MASTER_ADD"), res);
+        return new ResponseBean<>(HttpStatus.OK, ConstCore.rCode.SUCCESS, localeService.getMessage("SMS_MASTER_ADD"), localeService.getMessage("SMS_MASTER_ADD"), res);
 
 
     }

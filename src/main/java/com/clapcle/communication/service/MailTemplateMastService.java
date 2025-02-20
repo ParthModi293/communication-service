@@ -1,7 +1,7 @@
 package com.clapcle.communication.service;
 
 import com.clapcle.communication.common.ConstCommunication;
-import com.clapcle.communication.config.MessageService;
+import com.clapcle.communication.config.LocaleService;
 import com.clapcle.communication.dto.MailTemplateMastDto;
 import com.clapcle.communication.dto.MailTemplateMastFilterRequest;
 import com.clapcle.communication.entity.MailTemplateMast;
@@ -26,12 +26,12 @@ public class MailTemplateMastService {
 
     private final MailTemplateMastRepository mailTemplateMastRepository;
     private final MailTemplateMastValidator mailTemplateMastValidator;
-    private final MessageService messageService;
+    private final LocaleService localeService;
 
-    public MailTemplateMastService(MailTemplateMastRepository mailTemplateMastRepository, MailTemplateMastValidator mailTemplateMastValidator, MessageService messageService) {
+    public MailTemplateMastService(MailTemplateMastRepository mailTemplateMastRepository, MailTemplateMastValidator mailTemplateMastValidator, LocaleService localeService) {
         this.mailTemplateMastRepository = mailTemplateMastRepository;
         this.mailTemplateMastValidator = mailTemplateMastValidator;
-        this.messageService = messageService;
+        this.localeService = localeService;
     }
 
     /**
@@ -53,7 +53,7 @@ public class MailTemplateMastService {
         }
         updateTemplateDetails(template, mailTemplateMastDto);
         MailTemplateMast savedTemplate = mailTemplateMastRepository.save(template);
-        return new ResponseBean<>(HttpStatus.OK, ConstCore.rCode.SUCCESS, messageService.getMessage("TEMPLATE_ADD"), messageService.getMessage("TEMPLATE_ADD"), savedTemplate);
+        return new ResponseBean<>(HttpStatus.OK, ConstCore.rCode.SUCCESS, localeService.getMessage("TEMPLATE_ADD"), localeService.getMessage("TEMPLATE_ADD"), savedTemplate);
     }
 
     private void updateTemplateDetails(MailTemplateMast template, MailTemplateMastDto mailTemplateMastDto) {
@@ -97,7 +97,7 @@ public class MailTemplateMastService {
             templateMasts = mailTemplateMastRepository.findAllByEventId(mailTemplateMastFilterRequest.getEventId(), pageable);
         }
 
-        return new ResponseBean<>(HttpStatus.OK, HttpStatus.OK.value(), messageService.getMessage("TEMPLATE_FETCH"), messageService.getMessage("TEMPLATE_FETCH"), templateMasts.getContent(), new Pagination((int) templateMasts.getTotalElements(), mailTemplateMastFilterRequest.getPage(), mailTemplateMastFilterRequest.getSize()));
+        return new ResponseBean<>(HttpStatus.OK, HttpStatus.OK.value(), localeService.getMessage("TEMPLATE_FETCH"), localeService.getMessage("TEMPLATE_FETCH"), templateMasts.getContent(), new Pagination((int) templateMasts.getTotalElements(), mailTemplateMastFilterRequest.getPage(), mailTemplateMastFilterRequest.getSize()));
     }
 
     /**
@@ -110,9 +110,9 @@ public class MailTemplateMastService {
     public ResponseBean<?> getTemplateById(int id) {
         Optional<MailTemplateMast> templateMast = mailTemplateMastRepository.findById(id);
         if (templateMast.isPresent()) {
-            return new ResponseBean<>(HttpStatus.OK, ConstCore.rCode.SUCCESS, messageService.getMessage("TEMPLATE_FETCH"), messageService.getMessage("TEMPLATE_FETCH"), templateMast.get());
+            return new ResponseBean<>(HttpStatus.OK, ConstCore.rCode.SUCCESS, localeService.getMessage("TEMPLATE_FETCH"), localeService.getMessage("TEMPLATE_FETCH"), templateMast.get());
         }
-        return new ResponseBean<>(HttpStatus.OK, ConstCore.rCode.SUCCESS, messageService.getMessage("TEMPLATE_NOT_AVAILABLE"), messageService.getMessage("TEMPLATE_NOT_AVAILABLE"), null);
+        return new ResponseBean<>(HttpStatus.OK, ConstCore.rCode.SUCCESS, localeService.getMessage("TEMPLATE_NOT_AVAILABLE"), localeService.getMessage("TEMPLATE_NOT_AVAILABLE"), null);
     }
 
     public void deleteTemplate(int id) {

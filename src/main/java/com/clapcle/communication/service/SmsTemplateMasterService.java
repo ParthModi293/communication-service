@@ -1,7 +1,7 @@
 package com.clapcle.communication.service;
 
 import com.clapcle.communication.common.ConstCommunication;
-import com.clapcle.communication.config.MessageService;
+import com.clapcle.communication.config.LocaleService;
 import com.clapcle.communication.dto.SmsTemplateMasterDto;
 import com.clapcle.communication.dto.SmsTemplateMasterFilterRequest;
 import com.clapcle.communication.entity.SmsTemplateMaster;
@@ -30,12 +30,12 @@ public class SmsTemplateMasterService {
 
     private final SmsTemplateMasterRepository smsTemplateMasterRepository;
     private final SmsTemplateMasterValidator smsTemplateMasterValidator;
-    private final MessageService messageService;
+    private final LocaleService localeService;
 
-    public SmsTemplateMasterService(SmsTemplateMasterRepository smsTemplateMasterRepository, SmsTemplateMasterValidator smsTemplateMasterValidator, MessageService messageService) {
+    public SmsTemplateMasterService(SmsTemplateMasterRepository smsTemplateMasterRepository, SmsTemplateMasterValidator smsTemplateMasterValidator, LocaleService localeService) {
         this.smsTemplateMasterRepository = smsTemplateMasterRepository;
         this.smsTemplateMasterValidator = smsTemplateMasterValidator;
-        this.messageService = messageService;
+        this.localeService = localeService;
     }
 
     /**
@@ -66,7 +66,7 @@ public class SmsTemplateMasterService {
         Map<String, Object> res = new HashMap<>();
         res.put("Id", template.getId());
 
-        return new ResponseBean<>(HttpStatus.OK, ConstCore.rCode.SUCCESS, messageService.getMessage("SMS_TEMPLATE_ADD"), messageService.getMessage("SMS_TEMPLATE_ADD"), res);
+        return new ResponseBean<>(HttpStatus.OK, ConstCore.rCode.SUCCESS, localeService.getMessage("SMS_TEMPLATE_ADD"), localeService.getMessage("SMS_TEMPLATE_ADD"), res);
 
     }
 
@@ -117,7 +117,7 @@ public class SmsTemplateMasterService {
         } else {
             templateMasts = smsTemplateMasterRepository.findAll(pageable);
         }
-        return new ResponseBean<>(HttpStatus.OK, HttpStatus.OK.value(), messageService.getMessage("TEMPLATE_FETCH"), messageService.getMessage("TEMPLATE_FETCH"), templateMasts.getContent(), new Pagination((int) templateMasts.getTotalElements(), templateMastFilterRequest.getPage(), size));
+        return new ResponseBean<>(HttpStatus.OK, HttpStatus.OK.value(), localeService.getMessage("TEMPLATE_FETCH"), localeService.getMessage("TEMPLATE_FETCH"), templateMasts.getContent(), new Pagination((int) templateMasts.getTotalElements(), templateMastFilterRequest.getPage(), size));
 
     }
 
@@ -136,9 +136,9 @@ public class SmsTemplateMasterService {
 
         Optional<SmsTemplateMaster> templateMaster = smsTemplateMasterRepository.findById(id);
         if (templateMaster.isPresent()) {
-            return new ResponseBean<>(HttpStatus.OK, ConstCore.rCode.SUCCESS, messageService.getMessage("TEMPLATE_FETCH"), messageService.getMessage("TEMPLATE_FETCH"), templateMaster.get());
+            return new ResponseBean<>(HttpStatus.OK, ConstCore.rCode.SUCCESS, localeService.getMessage("TEMPLATE_FETCH"), localeService.getMessage("TEMPLATE_FETCH"), templateMaster.get());
         }
-        return new ResponseBean<>(HttpStatus.OK, ConstCore.rCode.SUCCESS, messageService.getMessage("TEMPLATE_FETCH"), messageService.getMessage("TEMPLATE_FETCH"), null);
+        return new ResponseBean<>(HttpStatus.OK, ConstCore.rCode.SUCCESS, localeService.getMessage("TEMPLATE_FETCH"), localeService.getMessage("TEMPLATE_FETCH"), null);
 
     }
 

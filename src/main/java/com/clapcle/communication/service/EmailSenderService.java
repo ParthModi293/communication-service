@@ -1,7 +1,7 @@
 package com.clapcle.communication.service;
 
 import com.clapcle.communication.common.EnumCommunication;
-import com.clapcle.communication.config.MessageService;
+import com.clapcle.communication.config.LocaleService;
 import com.clapcle.communication.dto.DynamicMailSender;
 import com.clapcle.communication.dto.EmailDto;
 import com.clapcle.communication.dto.EmailPropertiesDto;
@@ -32,13 +32,13 @@ public class EmailSenderService {
 
     private final DynamicMailSender dynamicMailSender;
     private final EmailHistoryRepository emailHistoryRepository;
-    private final MessageService messageService;
+    private final LocaleService localeService;
 
 
-    public EmailSenderService(DynamicMailSender dynamicMailSender, EmailHistoryRepository emailHistoryRepository, MessageService messageService) {
+    public EmailSenderService(DynamicMailSender dynamicMailSender, EmailHistoryRepository emailHistoryRepository, LocaleService localeService) {
         this.dynamicMailSender = dynamicMailSender;
         this.emailHistoryRepository = emailHistoryRepository;
-        this.messageService = messageService;
+        this.localeService = localeService;
     }
 
     /**
@@ -93,7 +93,7 @@ public class EmailSenderService {
                     if (!file.exists() || !file.canRead()) {
                         emailHistory.setStatus(String.valueOf(EnumCommunication.STATUS.FAILED));
                         emailHistory.setErrorMessage("File not found: " + filePath);
-                        throw new FileNotFoundException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK, messageService.getMessage("FILE_NOT_FOUND"), messageService.getMessage("FILE_NOT_FOUND"), null);
+                        throw new FileNotFoundException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK, localeService.getMessage("FILE_NOT_FOUND"), localeService.getMessage("FILE_NOT_FOUND"), null);
 
                     }
                     String fileName = file.getName();

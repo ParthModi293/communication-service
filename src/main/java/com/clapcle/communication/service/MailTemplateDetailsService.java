@@ -1,6 +1,6 @@
 package com.clapcle.communication.service;
 
-import com.clapcle.communication.config.MessageService;
+import com.clapcle.communication.config.LocaleService;
 import com.clapcle.communication.dto.MailTemplateDetailsDto;
 import com.clapcle.communication.entity.MailTemplateDetail;
 import com.clapcle.communication.repository.MailTemplateDetailRepository;
@@ -18,12 +18,12 @@ public class MailTemplateDetailsService {
 
     private final MailTemplateDetailsValidator mailTemplateDetailsValidator;
     private final MailTemplateDetailRepository mailTemplateDetailRepository;
-    private final MessageService messageService;
+    private final LocaleService localeService;
 
-    public MailTemplateDetailsService(MailTemplateDetailsValidator mailTemplateDetailsValidator, MailTemplateDetailRepository mailTemplateDetailRepository, MessageService messageService) {
+    public MailTemplateDetailsService(MailTemplateDetailsValidator mailTemplateDetailsValidator, MailTemplateDetailRepository mailTemplateDetailRepository, LocaleService localeService) {
         this.mailTemplateDetailsValidator = mailTemplateDetailsValidator;
         this.mailTemplateDetailRepository = mailTemplateDetailRepository;
-        this.messageService = messageService;
+        this.localeService = localeService;
     }
 
     /**
@@ -46,7 +46,7 @@ public class MailTemplateDetailsService {
                 mailTemplateDetailsDto.getIsActive(), mailTemplateDetailsDto.getFromEmailId());
 
         mailTemplateDetails = saveTemplateDetails(mailTemplateDetails);
-        return new ResponseBean<>(HttpStatus.OK, ConstCore.rCode.SUCCESS, messageService.getMessage("TEMPLATE_DETAILS_ADD"), messageService.getMessage("TEMPLATE_DETAILS_ADD"), mailTemplateDetails);
+        return new ResponseBean<>(HttpStatus.OK, ConstCore.rCode.SUCCESS, localeService.getMessage("TEMPLATE_DETAILS_ADD"), localeService.getMessage("TEMPLATE_DETAILS_ADD"), mailTemplateDetails);
     }
 
     public MailTemplateDetail saveTemplateDetails(MailTemplateDetail mailTemplateDetails) {
@@ -62,7 +62,7 @@ public class MailTemplateDetailsService {
      */
     public ResponseBean<?> getTemplateDetail(int templateMastId) {
         MailTemplateDetail templateDetailsByMailTemplateMastId = getTemplateDetailsByTemplateMastId(templateMastId);
-        return new ResponseBean<>(HttpStatus.OK, ConstCore.rCode.SUCCESS, messageService.getMessage("TEMPLATE_DETAILS_FETCH"), messageService.getMessage("TEMPLATE_DETAILS_FETCH"), templateDetailsByMailTemplateMastId);
+        return new ResponseBean<>(HttpStatus.OK, ConstCore.rCode.SUCCESS, localeService.getMessage("TEMPLATE_DETAILS_FETCH"), localeService.getMessage("TEMPLATE_DETAILS_FETCH"), templateDetailsByMailTemplateMastId);
     }
 
     public MailTemplateDetail getTemplateDetailsByTemplateMastId(int templateMastId) {
@@ -79,7 +79,7 @@ public class MailTemplateDetailsService {
      */
     public ResponseBean<?> getAllTemplateDetail(int templateMastId) {
         List<MailTemplateDetail> templateDetailsByMailTemplateMastId = getAllTemplateDetailsByTemplateMastId(templateMastId);
-        return new ResponseBean<>(HttpStatus.OK, ConstCore.rCode.SUCCESS, messageService.getMessage("TEMPLATE_DETAILS_FETCH"), messageService.getMessage("TEMPLATE_DETAILS_FETCH"), templateDetailsByMailTemplateMastId);
+        return new ResponseBean<>(HttpStatus.OK, ConstCore.rCode.SUCCESS, localeService.getMessage("TEMPLATE_DETAILS_FETCH"), localeService.getMessage("TEMPLATE_DETAILS_FETCH"), templateDetailsByMailTemplateMastId);
     }
 
     public List<MailTemplateDetail> getAllTemplateDetailsByTemplateMastId(int templateMastId) {
