@@ -1,6 +1,6 @@
 package com.clapcle.communication.validator;
 
-import com.clapcle.communication.config.LocaleService;
+import com.clapcle.communication.config.CommunicationLocaleService;
 import com.clapcle.communication.dto.SmsProviderMasterDto;
 import com.clapcle.communication.repository.SmsProviderMasterRepository;
 import com.clapcle.core.common.ConstCore;
@@ -14,48 +14,48 @@ import org.springframework.util.StringUtils;
 public class SmsProviderMasterValidator {
 
     private final SmsProviderMasterRepository smsProviderMasterRepository;
-    private final LocaleService localeService;
+    private final CommunicationLocaleService communicationLocaleService;
 
-    public SmsProviderMasterValidator(SmsProviderMasterRepository smsProviderMasterRepository, LocaleService localeService) {
+    public SmsProviderMasterValidator(SmsProviderMasterRepository smsProviderMasterRepository, CommunicationLocaleService communicationLocaleService) {
         this.smsProviderMasterRepository = smsProviderMasterRepository;
-        this.localeService = localeService;
+        this.communicationLocaleService = communicationLocaleService;
     }
 
     public void validateSmsProviderRequest(SmsProviderMasterDto dto) {
         if (!StringUtils.hasText(dto.getName())) {
             throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK,
-                    localeService.getMessage("PROVIDER_NAME_REQUIRED"),
-                    localeService.getMessage("PROVIDER_NAME_REQUIRED"), null);
+                    communicationLocaleService.getMessage("PROVIDER_NAME_REQUIRED"),
+                    communicationLocaleService.getMessage("PROVIDER_NAME_REQUIRED"), null);
         }
 
         if (!StringUtils.hasText(dto.getApiKey())) {
             throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK,
-                    localeService.getMessage("API_KEY_REQUIRED"),
-                    localeService.getMessage("API_KEY_REQUIRED"), null);
+                    communicationLocaleService.getMessage("API_KEY_REQUIRED"),
+                    communicationLocaleService.getMessage("API_KEY_REQUIRED"), null);
         }
 
         if (!StringUtils.hasText(dto.getUrl())) {
             throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK,
-                    localeService.getMessage("URL_REQUIRED"),
-                    localeService.getMessage("URL_REQUIRED"), null);
+                    communicationLocaleService.getMessage("URL_REQUIRED"),
+                    communicationLocaleService.getMessage("URL_REQUIRED"), null);
         }
 
         if (smsProviderMasterRepository.existsByName(dto.getName())) {
             throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK,
-                    localeService.getMessage("PROVIDER_NAME_EXISTS"),
-                    localeService.getMessage("PROVIDER_NAME_EXISTS"), null);
+                    communicationLocaleService.getMessage("PROVIDER_NAME_EXISTS"),
+                    communicationLocaleService.getMessage("PROVIDER_NAME_EXISTS"), null);
         }
 
         if (smsProviderMasterRepository.existsByApiKey(dto.getApiKey())) {
             throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK,
-                    localeService.getMessage("API_KEY_EXISTS"),
-                    localeService.getMessage("API_KEY_EXISTS"), null);
+                    communicationLocaleService.getMessage("API_KEY_EXISTS"),
+                    communicationLocaleService.getMessage("API_KEY_EXISTS"), null);
         }
 
         if (smsProviderMasterRepository.existsByUrl(dto.getUrl())) {
             throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK,
-                    localeService.getMessage("URL_EXISTS"),
-                    localeService.getMessage("URL_EXISTS"), null);
+                    communicationLocaleService.getMessage("URL_EXISTS"),
+                    communicationLocaleService.getMessage("URL_EXISTS"), null);
         }
 
     }

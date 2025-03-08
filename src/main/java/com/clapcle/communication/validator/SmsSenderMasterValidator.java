@@ -1,6 +1,6 @@
 package com.clapcle.communication.validator;
 
-import com.clapcle.communication.config.LocaleService;
+import com.clapcle.communication.config.CommunicationLocaleService;
 import com.clapcle.communication.dto.SmsSenderMasterDto;
 import com.clapcle.communication.repository.SmsProviderMasterRepository;
 import com.clapcle.communication.repository.SmsSenderMasterRepository;
@@ -15,12 +15,12 @@ public class SmsSenderMasterValidator {
 
 
     private final SmsProviderMasterRepository smsProviderMasterRepository;
-    private final LocaleService localeService;
+    private final CommunicationLocaleService communicationLocaleService;
     private final SmsSenderMasterRepository smsSenderMasterRepository;
 
-    public SmsSenderMasterValidator(SmsProviderMasterRepository smsProviderMasterRepository, LocaleService localeService, SmsSenderMasterRepository smsSenderMasterRepository) {
+    public SmsSenderMasterValidator(SmsProviderMasterRepository smsProviderMasterRepository, CommunicationLocaleService communicationLocaleService, SmsSenderMasterRepository smsSenderMasterRepository) {
         this.smsProviderMasterRepository = smsProviderMasterRepository;
-        this.localeService = localeService;
+        this.communicationLocaleService = communicationLocaleService;
         this.smsSenderMasterRepository = smsSenderMasterRepository;
     }
 
@@ -28,26 +28,26 @@ public class SmsSenderMasterValidator {
 
         if (!StringUtils.hasText(dto.getSenderCode())) {
             throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK,
-                    localeService.getMessage("SENDER_CODE_REQUIRED"),
-                    localeService.getMessage("SENDER_CODE_REQUIRED"), null);
+                    communicationLocaleService.getMessage("SENDER_CODE_REQUIRED"),
+                    communicationLocaleService.getMessage("SENDER_CODE_REQUIRED"), null);
         }
 
         if (smsSenderMasterRepository.existsBySenderCode(dto.getSenderCode())) {
             throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK,
-                    localeService.getMessage("SENDER_CODE_EXISTS"),
-                    localeService.getMessage("SENDER_CODE_EXISTS"), null);
+                    communicationLocaleService.getMessage("SENDER_CODE_EXISTS"),
+                    communicationLocaleService.getMessage("SENDER_CODE_EXISTS"), null);
         }
 
         if (dto.getServiceProviderId() == null || dto.getServiceProviderId() <= 0 || !smsProviderMasterRepository.existsById(dto.getServiceProviderId())) {
             throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK,
-                    localeService.getMessage("INVALID_SERVICE_PROVIDER_ID"),
-                    localeService.getMessage("INVALID_SERVICE_PROVIDER_ID"), null);
+                    communicationLocaleService.getMessage("INVALID_SERVICE_PROVIDER_ID"),
+                    communicationLocaleService.getMessage("INVALID_SERVICE_PROVIDER_ID"), null);
         }
 
         if (!StringUtils.hasText(dto.getIsActive())) {
             throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK,
-                    localeService.getMessage("ACTIVE_STATUS_REQUIRED"),
-                    localeService.getMessage("ACTIVE_STATUS_REQUIRED"), null);
+                    communicationLocaleService.getMessage("ACTIVE_STATUS_REQUIRED"),
+                    communicationLocaleService.getMessage("ACTIVE_STATUS_REQUIRED"), null);
         }
 
     }

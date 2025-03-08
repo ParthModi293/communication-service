@@ -1,6 +1,6 @@
 package com.clapcle.communication.service;
 
-import com.clapcle.communication.config.LocaleService;
+import com.clapcle.communication.config.CommunicationLocaleService;
 import com.clapcle.communication.dto.SmsProviderMasterDto;
 import com.clapcle.communication.entity.SmsProviderMaster;
 import com.clapcle.communication.repository.SmsProviderMasterRepository;
@@ -21,12 +21,12 @@ public class SmsProviderMasterService {
 
     private final SmsProviderMasterRepository smsProviderMasterRepository;
     private final SmsProviderMasterValidator smsProviderMasterValidator;
-    private final LocaleService localeService;
+    private final CommunicationLocaleService communicationLocaleService;
 
-    public SmsProviderMasterService(SmsProviderMasterRepository smsProviderMasterRepository, SmsProviderMasterValidator smsProviderMasterValidator, LocaleService localeService) {
+    public SmsProviderMasterService(SmsProviderMasterRepository smsProviderMasterRepository, SmsProviderMasterValidator smsProviderMasterValidator, CommunicationLocaleService communicationLocaleService) {
         this.smsProviderMasterRepository = smsProviderMasterRepository;
         this.smsProviderMasterValidator = smsProviderMasterValidator;
-        this.localeService = localeService;
+        this.communicationLocaleService = communicationLocaleService;
     }
 
     /**
@@ -50,7 +50,7 @@ public class SmsProviderMasterService {
         Map<String, Object> res = new HashMap<>();
         res.put("Id", provider.getId());
 
-        return new ResponseBean<>(HttpStatus.OK, ConstCore.rCode.SUCCESS, localeService.getMessage("SMS_PROVIDER_ADD"), localeService.getMessage("SMS_PROVIDER_ADD"), res);
+        return new ResponseBean<>(HttpStatus.OK, ConstCore.rCode.SUCCESS, communicationLocaleService.getMessage("SMS_PROVIDER_ADD"), communicationLocaleService.getMessage("SMS_PROVIDER_ADD"), res);
 
     }
 }

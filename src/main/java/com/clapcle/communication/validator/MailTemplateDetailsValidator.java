@@ -1,6 +1,6 @@
 package com.clapcle.communication.validator;
 
-import com.clapcle.communication.config.LocaleService;
+import com.clapcle.communication.config.CommunicationLocaleService;
 import com.clapcle.communication.dto.MailTemplateDetailsDto;
 import com.clapcle.communication.repository.MailTemplateDetailRepository;
 import com.clapcle.communication.repository.MailTemplateMastRepository;
@@ -23,18 +23,18 @@ public class MailTemplateDetailsValidator {
 
     private final MailTemplateMastRepository mailTemplateMastRepository;
     private final MailTemplateDetailRepository mailTemplateDetailRepository;
-    private final LocaleService localeService;
+    private final CommunicationLocaleService communicationLocaleService;
 
-    public MailTemplateDetailsValidator(MailTemplateMastRepository mailTemplateMastRepository, MailTemplateDetailRepository mailTemplateDetailRepository, LocaleService localeService) {
+    public MailTemplateDetailsValidator(MailTemplateMastRepository mailTemplateMastRepository, MailTemplateDetailRepository mailTemplateDetailRepository, CommunicationLocaleService communicationLocaleService) {
         this.mailTemplateMastRepository = mailTemplateMastRepository;
         this.mailTemplateDetailRepository = mailTemplateDetailRepository;
-        this.localeService = localeService;
+        this.communicationLocaleService = communicationLocaleService;
     }
 
     public void validateTemplateDetails(MailTemplateDetailsDto mailTemplateDetailsDto) {
 
         if (!mailTemplateMastRepository.existsById(mailTemplateDetailsDto.getTemplateMastId())) {
-            throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK, localeService.getMessage("EVENT_TEMPLATE_NOT_AVAILABLE"), localeService.getMessage("EVENT_TEMPLATE_NOT_AVAILABLE"), null);
+            throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK, communicationLocaleService.getMessage("EVENT_TEMPLATE_NOT_AVAILABLE"), communicationLocaleService.getMessage("EVENT_TEMPLATE_NOT_AVAILABLE"), null);
         }
         validateHtml(mailTemplateDetailsDto.getBody());
     }
@@ -47,22 +47,22 @@ public class MailTemplateDetailsValidator {
 
             for (String tag : MALICIOUS_TAGS) {
                 if ((!doc.select(tag).isEmpty())) {
-                    throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK, localeService.getMessage("TEMPLATE_DETAIL_BODY"), localeService.getMessage("TEMPLATE_DETAIL_BODY"), null);
+                    throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK, communicationLocaleService.getMessage("TEMPLATE_DETAIL_BODY"), communicationLocaleService.getMessage("TEMPLATE_DETAIL_BODY"), null);
                 }
             }
         } catch (UnsupportedEncodingException e) {
-            throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK, localeService.getMessage("TEMPLATE_DETAIL_BODY"), localeService.getMessage("TEMPLATE_DETAIL_BODY"), null);
+            throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK, communicationLocaleService.getMessage("TEMPLATE_DETAIL_BODY"), communicationLocaleService.getMessage("TEMPLATE_DETAIL_BODY"), null);
         }
     }
 
     public void validateTemplateMastId(int templateMastId) {
 
         if (templateMastId <= 0) {
-            throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK, localeService.getMessage("TEMPLATE_MAST_ID_NOT_VALID"), localeService.getMessage("TEMPLATE_MAST_ID_NOT_VALID"), null);
+            throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK, communicationLocaleService.getMessage("TEMPLATE_MAST_ID_NOT_VALID"), communicationLocaleService.getMessage("TEMPLATE_MAST_ID_NOT_VALID"), null);
         }
 
         if (!mailTemplateDetailRepository.existsByTemplateMastId(templateMastId)) {
-            throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK, localeService.getMessage("TEMPLATE_MAST_TEMPLATE_DETAIL_NOT_AVAILABLE"), localeService.getMessage("TEMPLATE_MAST_TEMPLATE_DETAIL_NOT_AVAILABLE"), null);
+            throw new ValidationException(ConstCore.rCode.BAD_REQUEST, HttpStatus.OK, communicationLocaleService.getMessage("TEMPLATE_MAST_TEMPLATE_DETAIL_NOT_AVAILABLE"), communicationLocaleService.getMessage("TEMPLATE_MAST_TEMPLATE_DETAIL_NOT_AVAILABLE"), null);
         }
     }
 

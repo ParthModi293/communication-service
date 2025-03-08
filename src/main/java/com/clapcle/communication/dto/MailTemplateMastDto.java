@@ -2,6 +2,7 @@ package com.clapcle.communication.dto;
 
 import com.clapcle.communication.common.ConstCommunication;
 import com.clapcle.communication.common.EnumCommunication;
+import com.clapcle.core.common.EnumValue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -24,5 +25,6 @@ public class MailTemplateMastDto {
     @Pattern(regexp = ConstCommunication.PatternCheck.REMARK, message = "Enter valid description")
     private String description;
 
+    @EnumValue(enumClass = EnumCommunication.PRIORITY.class, message = "Invalid priority enum value")
     private EnumCommunication.PRIORITY priority;
 }
